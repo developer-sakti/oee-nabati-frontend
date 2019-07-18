@@ -1,0 +1,25 @@
+.notcapital{
+  text-transform: none;
+}
+
+.transparent{
+  background-color: transparent;
+}
+
+.round-right{
+  border-radius: 0px 15px 15px 0px;
+}
+
+.select-line {
+  max-width: 12vw;
+}
+
+.select-line .v-input__control .v-input__slot{
+  margin : 0px;
+  border-radius: 20px !important;
+  
+}
+
+.select-line .v-input__control .v-input__slot .v-select__slot{
+  padding-left: 2vw;
+}
