@@ -37,7 +37,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/vue-scroll'],
 
   // https://nuxtjs.org/api/configuration-watch
   watch: ['~/vuex/**/*.js', '~/mixins/**/*.js'],

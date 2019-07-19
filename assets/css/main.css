@@ -1,7 +1,3 @@
-.notcapital{
-  text-transform: none;
-}
-
 .transparent{
   background-color: transparent;
 }
@@ -14,23 +10,20 @@
   border-radius: 15px 15px 0px 0px;
 }
 
-.select-line {
-  max-width: 12vw;
-  
-}
-
-.select-line .v-input__control .v-input__slot{
-  margin : 0px;
-  border-radius: 20px !important;
-  background-color: yellow !important;
-  
-}
-
-.select-line .v-input__control .v-input__slot .v-select__slot{
-  padding-left: 2vw;
-}
 
 .card-rounded {
   border: 1px solid lightblue !important;
   border-radius: 15px;
+}
+
+.grey-background{
+  background: #e5e5e5;
+}
+.round-text-field .v-input__control .v-input__slot {
+  margin: 0px;
+  border-radius: 20px !important;
+  background-color: #e5e5e5 !important;
+}
+.round-text-field .v-input__control .v-text-field__details {
+  display: none;
 }
