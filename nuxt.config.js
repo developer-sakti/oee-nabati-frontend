@@ -80,5 +80,8 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
+  },
+  env: {
+    SERVICE_URL: 'http://192.168.1.1:8080'
   }
 }

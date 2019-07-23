@@ -1,1 +1,3 @@
-export default {}
+export default {
+  hmi: state => state.hmi
+}
