@@ -8,7 +8,6 @@ module.exports = {
     parser: 'babel-eslint'
   },
   extends: [
-    'prettier',
     'prettier/vue',
     'plugin:prettier/recommended',
     '@nuxtjs',
@@ -20,5 +19,10 @@ module.exports = {
   // add your custom rules here
   rules: {
     eqeqeq: "off",
+    "arrow-parens": 2,
+    "no-console": "off",
+    "no-param-reassign": "off",
+    "import/no-extraneous-dependencies": "off",
+    "prettier/prettier": "error"
   }
 }
