@@ -10,7 +10,7 @@
         </v-card-title>
       </v-card>
       <v-toolbar-title class="font-weight-bold">
-        <span class="ml-5 no-select">{{ hmi === null ? '' : hmi.name }}</span>
+        <span class="ml-5 no-select">{{ hmi === null ? "" : hmi.name }}</span>
       </v-toolbar-title>
       <v-select
         v-model="lineSelected"
@@ -30,12 +30,12 @@
         <span class="title font-weight-regular no-select">rework</span>
       </v-btn>
       <v-spacer />
-      <span class="title mr-5 no-select">
+      <span class="title mr-3 no-select">
         {{ dateTime }}
       </span>
-      <v-icon size="40" class="transparent" color="red">
-        mdi-signal
-      </v-icon>
+      <span class="title mr-5 no-select">
+        {{ shift }}
+      </span>
     </v-toolbar>
     <v-layout row class="px-5 pt-3">
       <v-flex xs12 sm12 md12 lg12 xl12>
@@ -73,13 +73,18 @@
                   </v-flex>
                   <v-flex xs6 sm6 md6>
                     <v-btn
-                      large
-                      round
                       color="primary"
                       class="no-select"
                       @click="showDowntimeDialog(mechine)"
                     >
                       downtime
+                    </v-btn>
+                    <v-btn
+                      color="primary"
+                      class="no-select"
+                      @click="showDPDDialog(mechine)"
+                    >
+                      Daily Production Data
                     </v-btn>
                   </v-flex>
                 </v-layout>
@@ -104,7 +109,7 @@
                     <v-flex class="ml-4 pl-5 py-0">
                       <span>
                         {{ histori.reason }}
-                        {{ '{ ' + histori.duration + ' }' }}
+                        {{ "{ " + histori.duration + " }" }}
                       </span>
                     </v-flex>
                     <v-flex class="ml-4 pl-5 pt-0">
@@ -116,6 +121,18 @@
             </v-layout>
           </v-card-text>
         </v-card>
+        <v-fab-transition>
+          <!-- eslint-disable-next-line -->
+          <v-btn class="mr-5 mb-5"  absolute right bottom fab>
+            <v-icon
+              size="40"
+              class="transparent"
+              :color="connected ? 'success' : 'error'"
+            >
+              {{ connected ? "wifi" : "wifi_off" }}
+            </v-icon>
+          </v-btn>
+        </v-fab-transition>
       </v-flex>
     </v-layout>
     <v-dialog v-model="hmiTypeDialog" max-width="30vw" persistent>
@@ -178,7 +195,7 @@
                 </v-flex>
                 <v-flex xs6 sm6 md6>
                   <span class="subheading font-weight-bold">{{
-                    downtimeMechine === null ? '' : downtimeMechine.name
+                    mechineSelected === null ? "" : mechineSelected.name
                   }}</span>
                 </v-flex>
               </v-layout>
@@ -192,7 +209,7 @@
                 <v-flex xs9 sm9 md9>
                   <v-select
                     v-model="downtimeCategorySelected"
-                    class="select-downtime-category subheading"
+                    class="select-option subheading"
                     :items="downtimeCategories"
                     item-text="name"
                     item-value="id"
@@ -212,7 +229,7 @@
                 <v-flex xs9 sm9 md9>
                   <v-select
                     v-model="downtimeReasonSelected"
-                    class="select-downtime-category subheading"
+                    class="select-option subheading"
                     :items="downtimeReasons"
                     label="Pilih"
                     solo
@@ -233,11 +250,25 @@
                     class="round-text-field"
                     light
                     type="number"
+                    data-layout="numeric"
+                    @focus="showKeyboard"
                   >
                     <template v-slot:append>
                       <span class="black--text mr-3">menit</span>
                     </template>
                   </v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout class="mt-3">
+                <v-flex xs12 sm12 md12>
+                  <vue-touch-keyboard
+                    v-if="keyboard.visible"
+                    :options="keyboard.ops"
+                    :layout="keyboard.layout"
+                    :cancel="hideKeyboard"
+                    :accept="accept"
+                    :input="DPDPT"
+                  />
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -257,7 +288,148 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="reworkDialog" max-width="60vw" persistent>
+    <v-dialog v-model="DPDDialog" max-width="50vw" persistent>
+      <v-card color="primary" dark flat>
+        <v-card-title class="round-top py-0">
+          <v-spacer />
+          <div class="title-wrapper px-3 pb-2">
+            <v-layout column class="text-xs-center">
+              <v-flex>
+                <span class="headline font-weight-bold no-select">
+                  Daily Production Data
+                </span>
+              </v-flex>
+            </v-layout>
+          </div>
+          <v-spacer />
+          <v-btn icon class="mb-5" @click="resetDPDDialog()">
+            <v-icon size="30">
+              mdi-close-box-outline
+            </v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text class="px-3">
+          <v-layout row justify-center class="no-select">
+            <v-flex xs12 sm10 md10>
+              <v-layout row>
+                <v-flex xs5 sm5 md5>
+                  <span class="subheading font-weight-regular">
+                    Mesin
+                  </span>
+                </v-flex>
+                <v-flex xs1 sm1 md1 class="text-xs-center">
+                  <span class="subheading">:</span>
+                </v-flex>
+                <v-flex xs6 sm6 md6>
+                  <span class="subheading font-weight-bold">{{
+                    mechineSelected === null ? "" : mechineSelected.name
+                  }}</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row align-center class="mt-3">
+                <v-flex xs5 sm5 md5>
+                  <span class="subheading font-weight-regular">Throughput</span>
+                </v-flex>
+                <v-flex xs1 sm1 md1 class="text-xs-center">
+                  <span class="subheading">:</span>
+                </v-flex>
+                <v-flex xs6 sm6 md6>
+                  <v-text-field
+                    v-model="reworkValue"
+                    solo
+                    class="round-text-field .rework-input"
+                    light
+                    type="number"
+                    readonly
+                  >
+                    <template v-slot:prepend class="ma-0 pa-0">
+                      <v-btn
+                        fab
+                        dark
+                        color="warning"
+                        class="ma-0 pa-0"
+                        small
+                        @click="reworkValue > 0 ? reworkValue-- : ''"
+                      >
+                        <v-icon dark>
+                          remove
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <template v-slot:append>
+                      <span class="black--text mr-3">carton</span>
+                    </template>
+                    <template v-slot:append-outer>
+                      <v-btn
+                        fab
+                        dark
+                        color="indigo"
+                        class="ma-0 pa-0"
+                        small
+                        @click="reworkValue++"
+                      >
+                        <v-icon dark>
+                          add
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                  </v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout row align-center class="mt-3">
+                <v-flex xs5 sm5 md5>
+                  <span class="subheading font-weight-regular">
+                    Bottle Neck CT or Pitch Time
+                  </span>
+                </v-flex>
+                <v-flex xs1 sm1 md1 class="text-xs-center">
+                  <span class="subheading">:</span>
+                </v-flex>
+                <v-flex xs6 sm6 md6>
+                  <v-text-field
+                    solo
+                    class="round-text-field"
+                    light
+                    type="number"
+                    data-layout="numeric"
+                    @focus="showKeyboard"
+                  >
+                    <template v-slot:append>
+                      <span class="black--text mr-3">menit</span>
+                    </template>
+                  </v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout class="mt-3">
+                <v-flex xs12 sm12 md12>
+                  <vue-touch-keyboard
+                    v-if="keyboard.visible"
+                    :options="keyboard.ops"
+                    :layout="keyboard.layout"
+                    :cancel="hideKeyboard"
+                    :accept="accept"
+                    :input="DPDPT"
+                  />
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+        <v-card-actions class="px-5">
+          <v-btn
+            block
+            color="green"
+            large
+            round
+            class="mx-5 no-select"
+            @click="resetDowntimeDialog()"
+          >
+            simpan
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="reworkDialog" max-width="50vw" persistent>
       <v-card color="primary" dark flat>
         <v-card-title class="round-top py-0">
           <v-spacer />
@@ -283,43 +455,29 @@
               <v-layout row>
                 <v-flex xs5 sm5 md5>
                   <span class="subheading font-weight-regular">
-                    Adonan Mixing
+                    Rework Category
                   </span>
                 </v-flex>
                 <v-flex xs1 sm1 md1 class="text-xs-center">
                   <span class="subheading">:</span>
                 </v-flex>
                 <v-flex xs6 sm6 md6>
-                  <v-text-field
+                  <v-select
+                    v-model="reworkCategorySelected"
+                    class="select-option subheading"
+                    :items="reworkCategories"
+                    item-text="name"
+                    item-value="id"
+                    label="Pilih"
                     solo
-                    class="round-text-field .rework-input"
                     light
-                    type="number"
-                  >
-                    <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn fab dark color="warning" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          remove
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <span class="black--text mr-3">carton</span>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn fab dark color="indigo" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          add
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
+                  />
                 </v-flex>
               </v-layout>
               <v-layout row align-center class="mt-3">
                 <v-flex xs5 sm5 md5>
                   <span class="subheading font-weight-regular">
-                    Bubble Baking
+                    Value
                   </span>
                 </v-flex>
                 <v-flex xs1 sm1 md1 class="text-xs-center">
@@ -327,13 +485,22 @@
                 </v-flex>
                 <v-flex xs6 sm6 md6>
                   <v-text-field
+                    v-model="reworkValue"
                     solo
                     class="round-text-field .rework-input"
                     light
                     type="number"
+                    readonly
                   >
                     <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn fab dark color="warning" class="ma-0 pa-0" small>
+                      <v-btn
+                        fab
+                        dark
+                        color="warning"
+                        class="ma-0 pa-0"
+                        small
+                        @click="reworkValue > 0 ? reworkValue-- : ''"
+                      >
                         <v-icon dark>
                           remove
                         </v-icon>
@@ -343,223 +510,14 @@
                       <span class="black--text mr-3">carton</span>
                     </template>
                     <template v-slot:append-outer>
-                      <v-btn fab dark color="indigo" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          add
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row align-center class="mt-3">
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Bad Stock Sheet Baking
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-text-field
-                    solo
-                    class="round-text-field .rework-input"
-                    light
-                    type="number"
-                  >
-                    <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn fab dark color="warning" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          remove
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <span class="black--text mr-3">carton</span>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn fab dark color="indigo" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          add
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row align-center class="mt-3">
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Bad Stock Kue Packaging
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-text-field
-                    solo
-                    class="round-text-field .rework-input"
-                    light
-                    type="number"
-                  >
-                    <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn fab dark color="warning" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          remove
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <span class="black--text mr-3">carton</span>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn fab dark color="indigo" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          add
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row class="mt-3" align-center>
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Bad Stock Kue Creaming
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-text-field
-                    solo
-                    class="round-text-field .rework-input"
-                    light
-                    type="number"
-                  >
-                    <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn fab dark color="warning" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          remove
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <span class="black--text mr-3">carton</span>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn fab dark color="indigo" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          add
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row class="mt-3" align-center>
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Bad Stock Kue Cooling
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-text-field
-                    solo
-                    class="round-text-field .rework-input"
-                    light
-                    type="number"
-                  >
-                    <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn fab dark color="warning" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          remove
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <span class="black--text mr-3">carton</span>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn fab dark color="indigo" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          add
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row class="mt-3" align-center>
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Bad Stock Kue Cutting
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-text-field
-                    solo
-                    class="round-text-field .rework-input"
-                    light
-                    type="number"
-                  >
-                    <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn fab dark color="warning" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          remove
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <span class="black--text mr-3">carton</span>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn fab dark color="indigo" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          add
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row class="my-3" align-center>
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Bad Stock Toll Packaging
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-text-field
-                    solo
-                    class="round-text-field .rework-input"
-                    light
-                    type="number"
-                  >
-                    <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn fab dark color="warning" class="ma-0 pa-0" small>
-                        <v-icon dark>
-                          remove
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <span class="black--text mr-3">carton</span>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn fab dark color="indigo" class="ma-0 pa-0" small>
+                      <v-btn
+                        fab
+                        dark
+                        color="indigo"
+                        class="ma-0 pa-0"
+                        small
+                        @click="reworkValue++"
+                      >
                         <v-icon dark>
                           add
                         </v-icon>
@@ -588,185 +546,97 @@
   </v-container>
 </template>
 <script>
-import Default from '~/mixins/default.mixins'
-import Hmi from '~/mixins/hmi.mixins'
+// import keyboard from "vue-keyboard";
+import Default from "~/mixins/default.mixins";
+import Hmi from "~/mixins/hmi.mixins";
 export default {
-  layout: 'hmi',
-  middleware: ['initHmi'],
+  layout: "none",
+  // components: { keyboard },
+  middleware: ["initHmi"],
   mixins: [Default, Hmi],
   data() {
     return {
+      keyboard: {
+        visible: false,
+        ops: {
+          useKbEvents: false,
+          preventClickEvent: false
+        },
+        layout: "numeric"
+      },
       scrollOptions: {
         vuescroll: {
-          mode: 'native',
-          sizeStrategy: 'percent',
+          mode: "native",
+          sizeStrategy: "percent",
           detectResize: true
         },
         bar: {
           keepShow: true,
-          background: 'lightblue',
+          background: "lightblue",
           opacity: 1,
           minSize: 0.1,
-          size: '20px'
+          size: "20px"
         },
         scrollPanel: {
           scrollingX: false,
           scrollingY: true,
           speed: 300,
-          verticalNativeBarPos: 'right'
+          verticalNativeBarPos: "right"
         }
       },
+      connected: true,
+      shift: "Shift 1",
       downtimeDialog: false,
       hmiTypeDialog: false,
+      DPDDialog: false,
+      DPDPT: null,
       reworkDialog: false,
-      lines: [{ text: '', value: null }],
+      reworkCategorySelected: null,
+      reworkValue: 0,
+      lines: [{ text: "", value: null }],
       lineSelected: null,
       downtimeCategories: [],
       downtimeCategorySelected: null,
-      downtimeMechine: null,
+      mechineSelected: null,
       downtimeReasons: [],
       downtimeReasonSelected: null,
       mechines: [],
       histories: [
         {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
+          type: "UPDT",
+          mechine: "Baking",
+          reason: "Lampu Mati",
+          duration: "00:20:00",
+          date: "12-03-2019",
+          time: "08:11:12"
         },
         {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
-        },
-        {
-          type: 'UPDT',
-          mechine: 'Baking',
-          reason: 'Lampu Mati',
-          duration: '00:20:00',
-          date: '12-03-2019',
-          time: '08:11:12'
+          type: "UPDT",
+          mechine: "Baking",
+          reason: "Lampu Mati",
+          duration: "00:20:00",
+          date: "12-03-2019",
+          time: "08:11:12"
         }
       ]
-    }
+    };
   },
   computed: {
     hmi() {
-      return this.$store.getters.hmi
+      return this.$store.getters.hmi;
     }
   },
   watch: {
     lineSelected(value) {
-      this.mechines = this.hmi.lines[value].machines
+      this.mechines = this.hmi.lines[value].machines;
     },
     downtimeCategorySelected(value) {
       if (value !== null) {
         for (let i = 0; i < this.downtime.length; i++) {
-          if (this.downtimeMechine.id == this.downtime[i].mechineId) {
+          if (this.mechineSelected.id == this.downtime[i].mechineId) {
             for (let j = 0; j < this.downtime[i].reasons.length; j++) {
               if (value == this.downtime[i].reasons[j].typeId) {
-                this.downtimeReasons = this.downtime[i].reasons[j].reason
+                this.downtimeReasons = this.downtime[i].reasons[j].reason;
               }
             }
           }
@@ -776,60 +646,87 @@ export default {
   },
   mounted() {
     this.timeInterval = setInterval(() => {
-      this.setDateTime()
-    }, 1000)
-    this.setDateTime()
+      this.setDateTime();
+    }, 1000);
+    this.setDateTime();
   },
   created() {
     if (this.hmi === null) {
-      this.hmiTypeDialog = true
+      this.getHmiList();
+      this.hmiTypeDialog = true;
     } else {
-      this.setup()
+      this.setup();
     }
   },
   methods: {
+    showKeyboard(e) {
+      this.DPDPT = e.target;
+      this.keyboard.layout = e.target.dataset.layout;
+      this.keyboard.visible = true;
+    },
+    accept(text) {
+      this.DPDPT = text;
+      this.hideKeyboard();
+    },
+    hideKeyboard() {
+      this.keyboard.visible = false;
+    },
+    getHmiList() {
+      // this.$axios.get(process.env.SERVICE_URL + "/hmi").then(res => {
+      //   console.log(res);
+      // });
+    },
     setup() {
-      const lines = []
+      const lines = [];
       for (let i = 0; i < this.hmi.lines.length; i++) {
         lines.push({
           text: this.hmi.lines[i].name,
           value: i
-        })
+        });
       }
-      this.lines = lines
-      this.lineSelected = 0
+      this.lines = lines;
+      this.lineSelected = 0;
     },
     setupHMI(hmi) {
-      this.$store.dispatch('setHmi', hmi)
-      this.hmiTypeDialog = false
-      this.setup()
+      this.$store.dispatch("setHmi", hmi);
+      this.hmiTypeDialog = false;
+      this.setup();
     },
     showDowntimeDialog(mechine) {
-      this.downtimeMechine = mechine
+      this.mechineSelected = mechine;
       for (let i = 0; i < this.downtime.length; i++) {
         if (mechine.id == this.downtime[i].mechineId) {
-          this.downtimeCategories = this.downtime[i].types
+          this.downtimeCategories = this.downtime[i].types;
         }
       }
-      this.downtimeDialog = true
+      this.downtimeDialog = true;
     },
     resetDowntimeDialog() {
-      this.downtimeMechine = null
-      this.downtimeDialog = false
-      this.downtimeCategories = []
-      this.downtimeCategorySelected = null
-      this.downtimeReasons = []
-      this.downtimeReasonSelected = null
+      this.mechineSelected = null;
+      this.downtimeDialog = false;
+      this.downtimeCategories = [];
+      this.downtimeCategorySelected = null;
+      this.downtimeReasons = [];
+      this.downtimeReasonSelected = null;
+      this.keyboard.visible = false;
     },
     showReworkDialog() {
-      this.reworkDialog = true
+      this.reworkDialog = true;
     },
     resetReworkDialog() {
-      this.reworkDialog = false
-      console.log(process.env.SERVICE_URL)
+      this.reworkValue = 0;
+      this.reworkDialog = false;
+    },
+    showDPDDialog(mechine) {
+      this.DPDDialog = true;
+      this.mechineSelected = mechine;
+    },
+    resetDPDDialog() {
+      this.DPDDialog = false;
+      this.keyboard.visible = false;
     }
   }
-}
+};
 </script>
 <style>
 .select-line {
@@ -846,12 +743,12 @@ export default {
   padding-left: 2vw;
 }
 
-.select-downtime-category .v-input__control .v-input__slot {
+.select-option .v-input__control .v-input__slot {
   margin: 0px;
   border-radius: 20px !important;
   background-color: #e5e5e5 !important;
 }
-.select-downtime-category .v-input__control .v-text-field__details {
+.select-option .v-input__control .v-text-field__details {
   display: none;
 }
 
@@ -873,5 +770,8 @@ export default {
 }
 .v-text-field.v-text-field--solo .v-input__append-outer {
   margin: 0px 0px 0px 5px !important;
+}
+.vue-touch-keyboard .keyboard .key.next.featured {
+  display: none;
 }
 </style>

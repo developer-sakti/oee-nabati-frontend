@@ -1,1 +1,1 @@
-export { default } from '~/vuex'
+export { default } from "~/vuex";

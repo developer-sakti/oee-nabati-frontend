@@ -1,56 +1,56 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from "vuetify/es5/util/colors";
 
 export default {
-  mode: 'spa',
+  mode: "spa",
   /*
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: "%s - " + process.env.npm_package_name,
+    title: process.env.npm_package_name || "",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
-        hid: 'description',
-        name: 'description',
-        content: process.env.npm_package_description || ''
+        hid: "description",
+        name: "description",
+        content: process.env.npm_package_description || ""
       }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       {
-        rel: 'stylesheet',
+        rel: "stylesheet",
         href:
-          'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons'
+          "https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons"
       }
     ]
   },
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  loading: { color: "#fff" },
   /*
    ** Global CSS
    */
-  css: ['~/assets/css/main.css', '@mdi/font/css/materialdesignicons.css'],
+  css: ["~/assets/css/main.css", "@mdi/font/css/materialdesignicons.css"],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vue-scroll'],
+  plugins: ["~/plugins/vue-scroll", "~/plugins/vue-keyboard"],
 
   // https://nuxtjs.org/api/configuration-watch
-  watch: ['~/vuex/**/*.js', '~/mixins/**/*.js'],
+  watch: ["~/vuex/**/*.js", "~/mixins/**/*.js"],
 
   /*
    ** Nuxt.js modules
    */
   modules: [
-    '@nuxtjs/vuetify',
+    "@nuxtjs/vuetify",
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
-    '@nuxtjs/eslint-module',
-    '@nuxtjs/dotenv'
+    "@nuxtjs/axios",
+    "@nuxtjs/eslint-module",
+    "@nuxtjs/dotenv"
   ],
   /*
    ** Axios module configuration
@@ -82,6 +82,6 @@ export default {
     extend(config, ctx) {}
   },
   env: {
-    SERVICE_URL: 'http://192.168.1.1:8080'
+    SERVICE_URL: "http://192.168.1.11:8080/api/v1"
   }
-}
+};
