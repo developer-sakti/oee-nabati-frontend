@@ -1,13 +1,13 @@
 FROM node:lts-slim
-RUN mkdir -p /app
-WORKDIR /app
+RUN mkdir -p /frontend
+WORKDIR /frontend
 RUN apt update \
     && apt upgrade -y \
     && apt install build-essential \
     && apt autoremove -y \
     && apt clean \
     && npm i -g npm
-COPY . /app
+COPY . /frontend
 RUN npm i
 ENV NODE_ENV production
 ENV NUXT_HOST 0.0.0.0
