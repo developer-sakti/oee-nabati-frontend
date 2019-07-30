@@ -3,7 +3,7 @@ RUN mkdir -p /frontend
 WORKDIR /frontend
 RUN apt update \
     && apt upgrade -y \
-    && apt install build-essential \
+    && apt install build-essential -y \
     && apt autoremove -y \
     && apt clean \
     && npm i -g npm
