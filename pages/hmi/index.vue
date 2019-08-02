@@ -13,11 +13,11 @@
         <span class="ml-5 no-select">{{ hmi === null ? "" : hmi.name }}</span>
       </v-toolbar-title>
       <v-select
-        v-model="lineSelected"
+        v-model="lineIdSelected"
         class="ml-5 select-line title font-weight-regular no-select"
         :items="lines"
-        item-text="text"
-        item-value="value"
+        item-text="name"
+        item-value="id"
         solo
       />
       <v-btn
@@ -37,7 +37,7 @@
         {{ shift }}
       </span>
     </v-toolbar>
-    <v-layout row class="px-5 pt-3">
+    <v-layout row class="px-5">
       <v-flex xs12 sm12 md12 lg12 xl12>
         <v-card class="card-rounded mx-3">
           <v-card-text class="pa-0 ma-0">
@@ -79,20 +79,13 @@
                     >
                       downtime
                     </v-btn>
-                    <v-btn
-                      color="primary"
-                      class="no-select"
-                      @click="showDPDDialog(mechine)"
-                    >
-                      Daily Production Data
-                    </v-btn>
                   </v-flex>
                 </v-layout>
               </v-flex>
               <v-flex xs4 sm4 md4 class="pr-3 history-wrapper">
                 <vue-scroll :ops="scrollOptions">
                   <v-layout
-                    v-for="(histori, index) in histories"
+                    v-for="(histori, index) in downtimeHistories"
                     :key="index"
                     column
                     :class="
@@ -109,7 +102,7 @@
                     <v-flex class="ml-4 pl-5 py-0">
                       <span>
                         {{ histori.reason }}
-                        {{ "{ " + histori.duration + " }" }}
+                        {{ "{ " + histori.duration + " minutes" + " }" }}
                       </span>
                     </v-flex>
                     <v-flex class="ml-4 pl-5 pt-0">
@@ -149,7 +142,7 @@
             <v-list-tile
               v-for="(item, index) in hmis"
               :key="index"
-              @click="setupHMI(item)"
+              @click="selectHMI(item)"
             >
               <v-layout>
                 <v-flex>
@@ -161,7 +154,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="downtimeDialog" max-width="50vw" persistent>
+    <v-dialog v-model="downtimeDialog" max-width="70vw" persistent>
       <v-card color="primary" dark flat>
         <v-card-title class="round-top py-0">
           <v-spacer />
@@ -175,17 +168,26 @@
             </v-layout>
           </div>
           <v-spacer />
-          <v-btn icon class="mb-5" @click="resetDowntimeDialog()">
+          <v-btn icon class="mb-3" @click="resetDowntimeDialog()">
             <v-icon size="30">
               mdi-close-box-outline
             </v-icon>
           </v-btn>
         </v-card-title>
-        <v-card-text class="px-3">
+        <v-card-text class="py-0">
           <v-layout row justify-center class="no-select">
-            <v-flex xs12 sm10 md8>
+            <v-flex xs12 sm12 md12 class="px-3">
+              <v-layout justify-center row>
+                <v-flex v-if="alert.status" xs12 sm12 md6>
+                  <alert
+                    :message="alert.message"
+                    :type="alert.type"
+                    @dismissed="onDismissed"
+                  />
+                </v-flex>
+              </v-layout>
               <v-layout row>
-                <v-flex xs2 sm2 md2>
+                <v-flex xs1 sm1 md1>
                   <span class="subheading font-weight-regular">
                     Mesin
                   </span>
@@ -193,25 +195,45 @@
                 <v-flex xs1 sm1 md1 class="text-xs-center">
                   <span class="subheading">:</span>
                 </v-flex>
-                <v-flex xs6 sm6 md6>
+                <v-flex xs4 sm4 md4>
                   <span class="subheading font-weight-bold">{{
-                    mechineSelected === null ? "" : mechineSelected.name
+                    downtimeMachine === null ? "" : downtimeMachine.name
                   }}</span>
                 </v-flex>
               </v-layout>
               <v-layout row align-center class="mt-3">
-                <v-flex xs2 sm2 md2>
-                  <span class="subheading font-weight-regular">Kategori</span>
+                <v-flex xs1 sm1 md1>
+                  <span class="subheading font-weight-regular">
+                    Tanggal
+                  </span>
                 </v-flex>
                 <v-flex xs1 sm1 md1 class="text-xs-center">
                   <span class="subheading">:</span>
                 </v-flex>
-                <v-flex xs9 sm9 md9>
+                <v-flex xs4 sm4 md4>
+                  <v-menu>
+                    <template slot="activator">
+                      <v-btn light block round>
+                        <span class="text-none">{{ downtimeDate }}</span>
+                      </v-btn>
+                    </template>
+                    <v-date-picker v-model="downtimeDate" no-title />
+                  </v-menu>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                  <span class="subheading font-weight-regular ml-5">
+                    Kategori
+                  </span>
+                </v-flex>
+                <v-flex xs1 sm1 md1 class="text-xs-center">
+                  <span class="subheading">:</span>
+                </v-flex>
+                <v-flex xs4 sm4 md4>
                   <v-select
-                    v-model="downtimeCategorySelected"
+                    v-model="downtimeCategoryId"
                     class="select-option subheading"
                     :items="downtimeCategories"
-                    item-text="name"
+                    item-text="category"
                     item-value="id"
                     label="Pilih"
                     solo
@@ -219,32 +241,55 @@
                   />
                 </v-flex>
               </v-layout>
-              <v-layout row class="my-3" align-center>
-                <v-flex xs2 sm2 md2>
-                  <span class="subheading font-weight-regular">Alasan</span>
+              <v-layout row align-center class="mt-3">
+                <v-flex xs1 sm1 md1>
+                  <span class="subheading font-weight-regular">PO</span>
                 </v-flex>
                 <v-flex xs1 sm1 md1 class="text-xs-center">
                   <span class="subheading">:</span>
                 </v-flex>
-                <v-flex xs9 sm9 md9>
+                <v-flex xs4 sm4 md4>
                   <v-select
-                    v-model="downtimeReasonSelected"
+                    v-model="downtimePOId"
+                    class="select-option subheading"
+                    :items="downtimePOList"
+                    item-text="po"
+                    item-value="id"
+                    label="Pilih"
+                    solo
+                    light
+                  />
+                </v-flex>
+
+                <v-flex xs1 sm1 md1>
+                  <span class="subheading font-weight-regular ml-5">
+                    Alasan
+                  </span>
+                </v-flex>
+                <v-flex xs1 sm1 md1 class="text-xs-center">
+                  <span class="subheading">:</span>
+                </v-flex>
+                <v-flex xs4 sm4 md4>
+                  <v-select
+                    v-model="downtimeReasonId"
                     class="select-option subheading"
                     :items="downtimeReasons"
+                    item-text="reason"
+                    item-value="id"
                     label="Pilih"
                     solo
                     light
                   />
                 </v-flex>
               </v-layout>
-              <v-layout row align-center>
-                <v-flex xs2 sm2 md2>
+              <v-layout row align-center class="mt-3">
+                <v-flex xs1 sm1 md1>
                   <span class="subheading font-weight-regular">Durasi</span>
                 </v-flex>
                 <v-flex xs1 sm1 md1 class="text-xs-center">
                   <span class="subheading">:</span>
                 </v-flex>
-                <v-flex xs9 sm9 md9>
+                <v-flex xs4 sm4 md4>
                   <v-text-field
                     solo
                     class="round-text-field"
@@ -259,15 +304,15 @@
                   </v-text-field>
                 </v-flex>
               </v-layout>
-              <v-layout class="mt-3">
-                <v-flex xs12 sm12 md12>
+              <v-layout class="mt-3" align-center justify-center>
+                <v-flex xs12 sm12 md8>
                   <vue-touch-keyboard
                     v-if="keyboard.visible"
                     :options="keyboard.ops"
                     :layout="keyboard.layout"
                     :cancel="hideKeyboard"
                     :accept="accept"
-                    :input="DPDPT"
+                    :input="input"
                   />
                 </v-flex>
               </v-layout>
@@ -281,148 +326,7 @@
             large
             round
             class="mx-5 no-select"
-            @click="resetDowntimeDialog()"
-          >
-            simpan
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="DPDDialog" max-width="50vw" persistent>
-      <v-card color="primary" dark flat>
-        <v-card-title class="round-top py-0">
-          <v-spacer />
-          <div class="title-wrapper px-3 pb-2">
-            <v-layout column class="text-xs-center">
-              <v-flex>
-                <span class="headline font-weight-bold no-select">
-                  Daily Production Data
-                </span>
-              </v-flex>
-            </v-layout>
-          </div>
-          <v-spacer />
-          <v-btn icon class="mb-5" @click="resetDPDDialog()">
-            <v-icon size="30">
-              mdi-close-box-outline
-            </v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-text class="px-3">
-          <v-layout row justify-center class="no-select">
-            <v-flex xs12 sm10 md10>
-              <v-layout row>
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Mesin
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <span class="subheading font-weight-bold">{{
-                    mechineSelected === null ? "" : mechineSelected.name
-                  }}</span>
-                </v-flex>
-              </v-layout>
-              <v-layout row align-center class="mt-3">
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">Throughput</span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-text-field
-                    v-model="reworkValue"
-                    solo
-                    class="round-text-field .rework-input"
-                    light
-                    type="number"
-                    readonly
-                  >
-                    <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn
-                        fab
-                        dark
-                        color="warning"
-                        class="ma-0 pa-0"
-                        small
-                        @click="reworkValue > 0 ? reworkValue-- : ''"
-                      >
-                        <v-icon dark>
-                          remove
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <span class="black--text mr-3">carton</span>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn
-                        fab
-                        dark
-                        color="indigo"
-                        class="ma-0 pa-0"
-                        small
-                        @click="reworkValue++"
-                      >
-                        <v-icon dark>
-                          add
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row align-center class="mt-3">
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Bottle Neck CT or Pitch Time
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-text-field
-                    solo
-                    class="round-text-field"
-                    light
-                    type="number"
-                    data-layout="numeric"
-                    @focus="showKeyboard"
-                  >
-                    <template v-slot:append>
-                      <span class="black--text mr-3">menit</span>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout class="mt-3">
-                <v-flex xs12 sm12 md12>
-                  <vue-touch-keyboard
-                    v-if="keyboard.visible"
-                    :options="keyboard.ops"
-                    :layout="keyboard.layout"
-                    :cancel="hideKeyboard"
-                    :accept="accept"
-                    :input="DPDPT"
-                  />
-                </v-flex>
-              </v-layout>
-            </v-flex>
-          </v-layout>
-        </v-card-text>
-        <v-card-actions class="px-5">
-          <v-btn
-            block
-            color="green"
-            large
-            round
-            class="mx-5 no-select"
-            @click="resetDowntimeDialog()"
+            @click="storeDowntime()"
           >
             simpan
           </v-btn>
@@ -449,83 +353,41 @@
             </v-icon>
           </v-btn>
         </v-card-title>
-        <v-card-text class="px-3">
-          <v-layout row justify-center class="no-select">
-            <v-flex xs12 sm12 md10>
-              <v-layout row>
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Rework Category
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-select
-                    v-model="reworkCategorySelected"
-                    class="select-option subheading"
-                    :items="reworkCategories"
-                    item-text="name"
-                    item-value="id"
-                    label="Pilih"
-                    solo
-                    light
-                  />
-                </v-flex>
-              </v-layout>
-              <v-layout row align-center class="mt-3">
-                <v-flex xs5 sm5 md5>
-                  <span class="subheading font-weight-regular">
-                    Value
-                  </span>
-                </v-flex>
-                <v-flex xs1 sm1 md1 class="text-xs-center">
-                  <span class="subheading">:</span>
-                </v-flex>
-                <v-flex xs6 sm6 md6>
-                  <v-text-field
-                    v-model="reworkValue"
-                    solo
-                    class="round-text-field .rework-input"
-                    light
-                    type="number"
-                    readonly
-                  >
-                    <template v-slot:prepend class="ma-0 pa-0">
-                      <v-btn
-                        fab
-                        dark
-                        color="warning"
-                        class="ma-0 pa-0"
-                        small
-                        @click="reworkValue > 0 ? reworkValue-- : ''"
-                      >
-                        <v-icon dark>
-                          remove
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <span class="black--text mr-3">carton</span>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn
-                        fab
-                        dark
-                        color="indigo"
-                        class="ma-0 pa-0"
-                        small
-                        @click="reworkValue++"
-                      >
-                        <v-icon dark>
-                          add
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-              </v-layout>
+        <v-card-text class="px-5">
+          <v-layout row justify-center align-center class="no-select px-5">
+            <v-flex xs5 sm5 md5 class="pl-5">
+              <span class="subheading font-weight-regular">
+                Value
+              </span>
+            </v-flex>
+            <v-flex xs1 sm1 md1 class="text-xs-center">
+              <span class="subheading">:</span>
+            </v-flex>
+            <v-flex xs6 sm6 md6>
+              <v-text-field
+                solo
+                class="round-text-field .rework-input"
+                light
+                type="number"
+                data-layout="numeric"
+                @focus="showKeyboard"
+              >
+                <template v-slot:append>
+                  <span class="black--text mr-3">pcs</span>
+                </template>
+              </v-text-field>
+            </v-flex>
+          </v-layout>
+          <v-layout>
+            <v-flex xs12 sm12 md12 class="mt-3">
+              <vue-touch-keyboard
+                v-if="keyboard.visible"
+                :options="keyboard.ops"
+                :layout="keyboard.layout"
+                :cancel="hideKeyboard"
+                :accept="accept"
+                :input="input"
+              />
             </v-flex>
           </v-layout>
         </v-card-text>
@@ -546,14 +408,11 @@
   </v-container>
 </template>
 <script>
-// import keyboard from "vue-keyboard";
 import Default from "~/mixins/default.mixins";
-import Hmi from "~/mixins/hmi.mixins";
 export default {
   layout: "none",
-  // components: { keyboard },
   middleware: ["initHmi"],
-  mixins: [Default, Hmi],
+  mixins: [Default],
   data() {
     return {
       keyboard: {
@@ -584,41 +443,27 @@ export default {
           verticalNativeBarPos: "right"
         }
       },
+      hmis: [],
       connected: true,
       shift: "Shift 1",
       downtimeDialog: false,
+      downtimeDate: null,
+      downtimePOId: null,
+      downtimePOList: [],
+      downtimeCategories: [],
+      downtimeCategoryId: null,
+      downtimeMachine: null,
+      downtimeReasons: [],
+      downtimeReasonId: null,
+      downtimeDuration: 0,
+      downtimeHistories: [],
       hmiTypeDialog: false,
-      DPDDialog: false,
-      DPDPT: null,
       reworkDialog: false,
       reworkCategorySelected: null,
       reworkValue: 0,
-      lines: [{ text: "", value: null }],
-      lineSelected: null,
-      downtimeCategories: [],
-      downtimeCategorySelected: null,
-      mechineSelected: null,
-      downtimeReasons: [],
-      downtimeReasonSelected: null,
-      mechines: [],
-      histories: [
-        {
-          type: "UPDT",
-          mechine: "Baking",
-          reason: "Lampu Mati",
-          duration: "00:20:00",
-          date: "12-03-2019",
-          time: "08:11:12"
-        },
-        {
-          type: "UPDT",
-          mechine: "Baking",
-          reason: "Lampu Mati",
-          duration: "00:20:00",
-          date: "12-03-2019",
-          time: "08:11:12"
-        }
-      ]
+      lines: [],
+      lineIdSelected: null,
+      mechines: []
     };
   },
   computed: {
@@ -627,88 +472,212 @@ export default {
     }
   },
   watch: {
-    lineSelected(value) {
-      this.mechines = this.hmi.lines[value].machines;
+    lineIdSelected(value) {
+      this.getDowntimeHistories(value);
     },
-    downtimeCategorySelected(value) {
+    downtimeCategoryId(value) {
       if (value !== null) {
-        for (let i = 0; i < this.downtime.length; i++) {
-          if (this.mechineSelected.id == this.downtime[i].mechineId) {
-            for (let j = 0; j < this.downtime[i].reasons.length; j++) {
-              if (value == this.downtime[i].reasons[j].typeId) {
-                this.downtimeReasons = this.downtime[i].reasons[j].reason;
-              }
+        this.$axios
+          .post(process.env.SERVICE_URL + "/downtime-reason-machine", {
+            machine_id: value
+          })
+          .then(res => {
+            if (res.status == 201) {
+              this.downtimeReasons = res.data;
+            }
+          });
+      }
+    },
+    downtimeDate(value) {
+      this.downtimePOList = [];
+      this.$axios
+        .get(
+          process.env.SERVICE_URL +
+            "/rencana-produksi/find?date=" +
+            value +
+            "&line_id=" +
+            this.lineIdSelected.id
+        )
+        .then(res => {
+          if (res.status == 200) {
+            for (let i = 0; i < res.data.length; i++) {
+              this.downtimePOList.push({
+                id: res.data[i].id,
+                po:
+                  res.data[i].po_number +
+                  " ( " +
+                  res.data[i].shift.shift_name +
+                  " )"
+              });
             }
           }
-        }
-      }
+        });
     }
   },
   mounted() {
-    this.timeInterval = setInterval(() => {
-      this.setDateTime();
-    }, 1000);
-    this.setDateTime();
+    setInterval(() => {
+      if (this.hmi !== null) {
+        this.getPOActive();
+      }
+    }, 5000);
   },
   created() {
     if (this.hmi === null) {
       this.getHmiList();
       this.hmiTypeDialog = true;
     } else {
-      this.setup();
+      this.setupHMI();
     }
   },
   methods: {
+    getHmiList() {
+      this.$axios.get(process.env.SERVICE_URL + "/hmi").then(res => {
+        if (res.status == 200) {
+          this.hmis = res.data;
+        }
+      });
+    },
+    selectHMI(hmi) {
+      this.$axios
+        .get(process.env.SERVICE_URL + "/hmi/lines/machines")
+        .then(res => {
+          if (res.status == 200) {
+            for (let i = 0; i < res.data.length; i++) {
+              if (hmi.id == res.data[i].id) {
+                this.lines = res.data[i].lines;
+                this.lineIdSelected = res.data[i].lines[0].id;
+                this.mechines = res.data[i].machines;
+                this.getPOActive();
+                this.getDowntimeHistories(this.lineIdSelected);
+              }
+            }
+          }
+        });
+      this.$store.dispatch("saveHmi", hmi);
+      this.hmiTypeDialog = false;
+    },
+    setupHMI() {
+      this.$axios
+        .get(process.env.SERVICE_URL + "/hmi/lines/machines")
+        .then(res => {
+          if (res.status == 200) {
+            for (let i = 0; i < res.data.length; i++) {
+              if (this.hmi.id == res.data[i].id) {
+                this.lines = res.data[i].lines;
+                this.lineIdSelected = res.data[i].lines[0].id;
+                this.mechines = res.data[i].machines;
+                this.getPOActive();
+              }
+            }
+          }
+        });
+    },
+    getPOActive() {
+      this.$axios
+        .get(
+          process.env.SERVICE_URL +
+            "/rencana-produksi/active?date=" +
+            this.currentDate +
+            "&time=" +
+            this.currentTime +
+            "+&line_id=" +
+            this.lineIdSelected
+        )
+        .then(res => {
+          if (res.status == 200) {
+            this.connected = true;
+            if (res.data === "") {
+              this.shift = "Shift -";
+            }
+          } else {
+            this.connected = false;
+          }
+        });
+    },
+    getDowntimeHistories(id) {
+      this.downtimeHistories = [];
+      this.$axios
+        .get(process.env.SERVICE_URL + "/downtime/history?line_id=" + id)
+        .then(res => {
+          for (let i = 0; i < res.data.length; i++) {
+            this.downtimeHistories.push({
+              type: res.data[i].downtime_category.category,
+              mechine: res.data[i].machine.name,
+              duration: res.data[i].duration,
+              date: res.data[i].created_at.substring(0, 10),
+              time: res.data[i].created_at.substring(11, 19)
+            });
+          }
+        });
+    },
     showKeyboard(e) {
-      this.DPDPT = e.target;
+      this.input = e.target;
+      this.downtimeDuration = e.target;
       this.keyboard.layout = e.target.dataset.layout;
       this.keyboard.visible = true;
     },
     accept(text) {
-      this.DPDPT = text;
+      this.input = text;
+      this.downtimeDuration = text;
       this.hideKeyboard();
     },
     hideKeyboard() {
       this.keyboard.visible = false;
     },
-    getHmiList() {
-      // this.$axios.get(process.env.SERVICE_URL + "/hmi").then(res => {
-      //   console.log(res);
-      // });
-    },
-    setup() {
-      const lines = [];
-      for (let i = 0; i < this.hmi.lines.length; i++) {
-        lines.push({
-          text: this.hmi.lines[i].name,
-          value: i
-        });
-      }
-      this.lines = lines;
-      this.lineSelected = 0;
-    },
-    setupHMI(hmi) {
-      this.$store.dispatch("setHmi", hmi);
-      this.hmiTypeDialog = false;
-      this.setup();
-    },
     showDowntimeDialog(mechine) {
-      this.mechineSelected = mechine;
-      for (let i = 0; i < this.downtime.length; i++) {
-        if (mechine.id == this.downtime[i].mechineId) {
-          this.downtimeCategories = this.downtime[i].types;
-        }
-      }
+      this.downtimeMachine = mechine;
+      this.$axios
+        .get(process.env.SERVICE_URL + "/downtime-category")
+        .then(res => {
+          if (res.status == 200) {
+            this.downtimeCategories = res.data;
+          }
+        });
+      this.downtimeDate = this.currentDate;
       this.downtimeDialog = true;
     },
     resetDowntimeDialog() {
-      this.mechineSelected = null;
+      this.downtimeMachine = null;
       this.downtimeDialog = false;
       this.downtimeCategories = [];
-      this.downtimeCategorySelected = null;
+      this.downtimeCategoryId = null;
       this.downtimeReasons = [];
-      this.downtimeReasonSelected = null;
+      this.downtimeReasonId = null;
       this.keyboard.visible = false;
+    },
+    storeDowntime() {
+      if (!this.keyboard.visible) {
+        if (
+          this.downtimeCategoryId === null ||
+          this.downtimeReasonId === null ||
+          this.downtimePOId === null ||
+          this.downtimeDuration === null
+        ) {
+          this.alert = {
+            status: true,
+            type: "warning",
+            message: "Semua field harus diisi"
+          };
+        } else {
+          this.$axios
+            .post(process.env.SERVICE_URL + "/downtime", {
+              duration: this.downtimeDuration,
+              rencanaProduksiId: this.downtimePOId,
+              machineId: this.downtimeMachine.id,
+              downtimeCategoryId: this.downtimeCategoryId,
+              downtimeReasonId: this.downtimeReasonId
+            })
+            .then(res => {
+              console.log(res);
+            });
+        }
+      } else {
+        this.alert = {
+          status: true,
+          type: "warning",
+          message: "Tutup Virtual Keyboard dulu baru klik simpan"
+        };
+      }
     },
     showReworkDialog() {
       this.reworkDialog = true;
@@ -716,14 +685,6 @@ export default {
     resetReworkDialog() {
       this.reworkValue = 0;
       this.reworkDialog = false;
-    },
-    showDPDDialog(mechine) {
-      this.DPDDialog = true;
-      this.mechineSelected = mechine;
-    },
-    resetDPDDialog() {
-      this.DPDDialog = false;
-      this.keyboard.visible = false;
     }
   }
 };

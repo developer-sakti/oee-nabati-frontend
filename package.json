@@ -20,8 +20,6 @@
     "@nuxtjs/vuetify": "0.5.5",
     "ngrok": "^3.2.3",
     "nuxt": "^2.0.0",
-    "simple-keyboard": "^2.24.1",
-    "vue-keyboard": "^3.1.0",
     "vue-touch-keyboard": "^0.3.2",
     "vuescroll": "^4.13.1"
   },

@@ -17,12 +17,37 @@ export default {
       ],
       days: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
       dateTime: null,
-      timeInterval: ""
+      clock: null,
+      currentDate: null,
+      currentTime: null,
+      timeInterval: "",
+      snackbar: {
+        status: false,
+        text: "",
+        type: ""
+      },
+      alert: {
+        status: false,
+        message: "",
+        type: "info"
+      }
     };
+  },
+  mounted() {
+    setInterval(() => {
+      this.setDateTime();
+    }, 1000);
+    this.setDateTime();
   },
   methods: {
     setDateTime() {
       const date = new Date();
+      const month =
+        date.getMonth() + 1 > 9
+          ? date.getMonth() + 1
+          : "0" + (date.getMonth() + 1);
+      this.currentDate =
+        date.getFullYear() + "-" + month + "-" + date.getDate();
       const currentDate =
         this.days[date.getDay()] +
         ", " +
@@ -37,8 +62,19 @@ export default {
         date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes();
       const second =
         date.getSeconds() > 9 ? date.getSeconds() : "0" + date.getSeconds();
-      const currentTime = hour + ":" + minute + ":" + second;
-      this.dateTime = currentDate + " " + currentTime;
+      this.currentTime = hour + ":" + minute + ":" + second;
+      this.dateTime = currentDate + " " + this.currentTime;
+      this.clock = hour + ":" + minute;
+    },
+    showSnackbar(snackbar) {
+      this.snackbar = snackbar;
+    },
+    onDismissed() {
+      this.alert = {
+        status: false,
+        message: "",
+        type: "info"
+      };
     }
   }
 };

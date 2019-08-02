@@ -29,7 +29,7 @@ export default {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: "#fff" },
+  loading: false,
   /*
    ** Global CSS
    */
@@ -37,7 +37,11 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/vue-scroll", "~/plugins/vue-keyboard"],
+  plugins: [
+    "~/plugins/component-register",
+    "~/plugins/vue-scroll",
+    "~/plugins/vue-keyboard"
+  ],
 
   // https://nuxtjs.org/api/configuration-watch
   watch: ["~/vuex/**/*.js", "~/mixins/**/*.js"],
@@ -82,6 +86,7 @@ export default {
     extend(config, ctx) {}
   },
   env: {
-    SERVICE_URL: "http://192.168.1.11:8080/api/v1"
+    SERVICE_URL:
+      "http://ec2-13-250-42-181.ap-southeast-1.compute.amazonaws.com/api/v1"
   }
 };
