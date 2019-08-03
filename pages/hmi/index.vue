@@ -10,7 +10,7 @@
         </v-card-title>
       </v-card>
       <v-toolbar-title class="font-weight-bold">
-        <span class="ml-5 no-select">{{ hmi === null ? "" : hmi.name }}</span>
+        <span class="ml-5 no-select">{{ hmi === null ? '' : hmi.name }}</span>
       </v-toolbar-title>
       <v-select
         v-model="lineIdSelected"
@@ -41,6 +41,15 @@
       <v-flex xs12 sm12 md12 lg12 xl12>
         <v-card class="card-rounded mx-3">
           <v-card-text class="pa-0 ma-0">
+            <v-snackbar
+              v-model="snackbar.status"
+              :color="snackbar.color"
+              :timeout="3000"
+              bottom
+              left
+            >
+              {{ snackbar.text }}
+            </v-snackbar>
             <v-toolbar flat dark color="primary" class="round-top px-3">
               <v-layout row class="text-xs-center no-select">
                 <v-flex xs4 sm4 md4 lg4 xl4>
@@ -102,7 +111,7 @@
                     <v-flex class="ml-4 pl-5 py-0">
                       <span>
                         {{ histori.reason }}
-                        {{ "{ " + histori.duration + " minutes" + " }" }}
+                        {{ '{ ' + histori.duration + ' minutes' + ' }' }}
                       </span>
                     </v-flex>
                     <v-flex class="ml-4 pl-5 pt-0">
@@ -122,7 +131,7 @@
               class="transparent"
               :color="connected ? 'success' : 'error'"
             >
-              {{ connected ? "wifi" : "wifi_off" }}
+              {{ connected ? 'wifi' : 'wifi_off' }}
             </v-icon>
           </v-btn>
         </v-fab-transition>
@@ -197,7 +206,7 @@
                 </v-flex>
                 <v-flex xs4 sm4 md4>
                   <span class="subheading font-weight-bold">{{
-                    downtimeMachine === null ? "" : downtimeMachine.name
+                    downtimeMachine === null ? '' : downtimeMachine.name
                   }}</span>
                 </v-flex>
               </v-layout>
@@ -408,10 +417,10 @@
   </v-container>
 </template>
 <script>
-import Default from "~/mixins/default.mixins";
+import Default from '~/mixins/default.mixins'
 export default {
-  layout: "none",
-  middleware: ["initHmi"],
+  layout: 'none',
+  middleware: ['initHmi'],
   mixins: [Default],
   data() {
     return {
@@ -421,31 +430,31 @@ export default {
           useKbEvents: false,
           preventClickEvent: false
         },
-        layout: "numeric"
+        layout: 'numeric'
       },
       scrollOptions: {
         vuescroll: {
-          mode: "native",
-          sizeStrategy: "percent",
+          mode: 'native',
+          sizeStrategy: 'percent',
           detectResize: true
         },
         bar: {
           keepShow: true,
-          background: "lightblue",
+          background: 'lightblue',
           opacity: 1,
           minSize: 0.1,
-          size: "20px"
+          size: '20px'
         },
         scrollPanel: {
           scrollingX: false,
           scrollingY: true,
           speed: 300,
-          verticalNativeBarPos: "right"
+          verticalNativeBarPos: 'right'
         }
       },
       hmis: [],
       connected: true,
-      shift: "Shift 1",
+      shift: 'Shift 1',
       downtimeDialog: false,
       downtimeDate: null,
       downtimePOId: null,
@@ -464,39 +473,39 @@ export default {
       lines: [],
       lineIdSelected: null,
       mechines: []
-    };
+    }
   },
   computed: {
     hmi() {
-      return this.$store.getters.hmi;
+      return this.$store.getters.hmi
     }
   },
   watch: {
     lineIdSelected(value) {
-      this.getDowntimeHistories(value);
+      this.getDowntimeHistories(value)
     },
     downtimeCategoryId(value) {
       if (value !== null) {
         this.$axios
-          .post(process.env.SERVICE_URL + "/downtime-reason-machine", {
+          .post(process.env.SERVICE_URL + '/downtime-reason-machine', {
             machine_id: value
           })
           .then(res => {
             if (res.status == 201) {
-              this.downtimeReasons = res.data;
+              this.downtimeReasons = res.data
             }
-          });
+          })
       }
     },
     downtimeDate(value) {
-      this.downtimePOList = [];
+      this.downtimePOList = []
       this.$axios
         .get(
           process.env.SERVICE_URL +
-            "/rencana-produksi/find?date=" +
+            '/rencana-produksi/find?date=' +
             value +
-            "&line_id=" +
-            this.lineIdSelected.id
+            '&line_id=' +
+            this.lineIdSelected
         )
         .then(res => {
           if (res.status == 200) {
@@ -505,99 +514,99 @@ export default {
                 id: res.data[i].id,
                 po:
                   res.data[i].po_number +
-                  " ( " +
+                  ' ( ' +
                   res.data[i].shift.shift_name +
-                  " )"
-              });
+                  ' )'
+              })
             }
           }
-        });
+        })
     }
   },
   mounted() {
     setInterval(() => {
       if (this.hmi !== null) {
-        this.getPOActive();
+        this.getPOActive()
       }
-    }, 5000);
+    }, 5000)
   },
   created() {
     if (this.hmi === null) {
-      this.getHmiList();
-      this.hmiTypeDialog = true;
+      this.getHmiList()
+      this.hmiTypeDialog = true
     } else {
-      this.setupHMI();
+      this.setupHMI()
     }
   },
   methods: {
     getHmiList() {
-      this.$axios.get(process.env.SERVICE_URL + "/hmi").then(res => {
+      this.$axios.get(process.env.SERVICE_URL + '/hmi').then(res => {
         if (res.status == 200) {
-          this.hmis = res.data;
+          this.hmis = res.data
         }
-      });
+      })
     },
     selectHMI(hmi) {
       this.$axios
-        .get(process.env.SERVICE_URL + "/hmi/lines/machines")
+        .get(process.env.SERVICE_URL + '/hmi/lines/machines')
         .then(res => {
           if (res.status == 200) {
             for (let i = 0; i < res.data.length; i++) {
               if (hmi.id == res.data[i].id) {
-                this.lines = res.data[i].lines;
-                this.lineIdSelected = res.data[i].lines[0].id;
-                this.mechines = res.data[i].machines;
-                this.getPOActive();
-                this.getDowntimeHistories(this.lineIdSelected);
+                this.lines = res.data[i].lines
+                this.lineIdSelected = res.data[i].lines[0].id
+                this.mechines = res.data[i].machines
+                this.getPOActive()
+                this.getDowntimeHistories(this.lineIdSelected)
               }
             }
           }
-        });
-      this.$store.dispatch("saveHmi", hmi);
-      this.hmiTypeDialog = false;
+        })
+      this.$store.dispatch('saveHmi', hmi)
+      this.hmiTypeDialog = false
     },
     setupHMI() {
       this.$axios
-        .get(process.env.SERVICE_URL + "/hmi/lines/machines")
+        .get(process.env.SERVICE_URL + '/hmi/lines/machines')
         .then(res => {
           if (res.status == 200) {
             for (let i = 0; i < res.data.length; i++) {
               if (this.hmi.id == res.data[i].id) {
-                this.lines = res.data[i].lines;
-                this.lineIdSelected = res.data[i].lines[0].id;
-                this.mechines = res.data[i].machines;
-                this.getPOActive();
+                this.lines = res.data[i].lines
+                this.lineIdSelected = res.data[i].lines[0].id
+                this.mechines = res.data[i].machines
+                this.getPOActive()
               }
             }
           }
-        });
+        })
     },
     getPOActive() {
       this.$axios
         .get(
           process.env.SERVICE_URL +
-            "/rencana-produksi/active?date=" +
+            '/rencana-produksi/active?date=' +
             this.currentDate +
-            "&time=" +
+            '&time=' +
             this.currentTime +
-            "+&line_id=" +
+            '+&line_id=' +
             this.lineIdSelected
         )
         .then(res => {
           if (res.status == 200) {
-            this.connected = true;
-            if (res.data === "") {
-              this.shift = "Shift -";
+            this.connected = true
+            if (res.data === '') {
+              this.shift = 'Shift -'
             }
           } else {
-            this.connected = false;
+            this.connected = false
           }
-        });
+        })
     },
     getDowntimeHistories(id) {
-      this.downtimeHistories = [];
+      this.downtimeHistories = []
       this.$axios
-        .get(process.env.SERVICE_URL + "/downtime/history?line_id=" + id)
+        .get(process.env.SERVICE_URL + '/downtime/history?line_id=' + id)
         .then(res => {
           for (let i = 0; i < res.data.length; i++) {
             this.downtimeHistories.push({
@@ -606,44 +615,44 @@ export default {
               duration: res.data[i].duration,
               date: res.data[i].created_at.substring(0, 10),
               time: res.data[i].created_at.substring(11, 19)
-            });
+            })
           }
-        });
+        })
     },
     showKeyboard(e) {
-      this.input = e.target;
-      this.downtimeDuration = e.target;
-      this.keyboard.layout = e.target.dataset.layout;
-      this.keyboard.visible = true;
+      this.input = e.target
+      this.downtimeDuration = e.target
+      this.keyboard.layout = e.target.dataset.layout
+      this.keyboard.visible = true
     },
     accept(text) {
-      this.input = text;
-      this.downtimeDuration = text;
-      this.hideKeyboard();
+      this.input = text
+      this.downtimeDuration = text
+      this.hideKeyboard()
     },
     hideKeyboard() {
-      this.keyboard.visible = false;
+      this.keyboard.visible = false
     },
     showDowntimeDialog(mechine) {
-      this.downtimeMachine = mechine;
+      this.downtimeMachine = mechine
       this.$axios
-        .get(process.env.SERVICE_URL + "/downtime-category")
+        .get(process.env.SERVICE_URL + '/downtime-category')
         .then(res => {
           if (res.status == 200) {
-            this.downtimeCategories = res.data;
+            this.downtimeCategories = res.data
           }
-        });
-      this.downtimeDate = this.currentDate;
-      this.downtimeDialog = true;
+        })
+      this.downtimeDate = this.currentDate
+      this.downtimeDialog = true
     },
     resetDowntimeDialog() {
-      this.downtimeMachine = null;
-      this.downtimeDialog = false;
-      this.downtimeCategories = [];
-      this.downtimeCategoryId = null;
-      this.downtimeReasons = [];
-      this.downtimeReasonId = null;
-      this.keyboard.visible = false;
+      this.downtimeMachine = null
+      this.downtimeDialog = false
+      this.downtimeCategories = []
+      this.downtimeCategoryId = null
+      this.downtimeReasons = []
+      this.downtimeReasonId = null
+      this.keyboard.visible = false
     },
     storeDowntime() {
       if (!this.keyboard.visible) {
@@ -655,12 +664,12 @@ export default {
         ) {
           this.alert = {
             status: true,
-            type: "warning",
-            message: "Semua field harus diisi"
-          };
+            type: 'warning',
+            message: 'Semua field harus diisi'
+          }
         } else {
           this.$axios
-            .post(process.env.SERVICE_URL + "/downtime", {
+            .post(process.env.SERVICE_URL + '/downtime', {
               duration: this.downtimeDuration,
               rencanaProduksiId: this.downtimePOId,
               machineId: this.downtimeMachine.id,
@@ -668,26 +677,40 @@ export default {
               downtimeReasonId: this.downtimeReasonId
             })
             .then(res => {
-              console.log(res);
-            });
+              if (res.data.success) {
+                this.resetDowntimeDialog()
+                this.snackbar = {
+                  status: true,
+                  text: 'Data downtime ditambahkan',
+                  color: 'success'
+                }
+                this.getDowntimeHistories()
+              } else {
+                this.snackbar = {
+                  status: true,
+                  text: 'Data downtime gagal ditambahkan',
+                  color: 'error'
+                }
+              }
+            })
         }
       } else {
         this.alert = {
           status: true,
-          type: "warning",
-          message: "Tutup Virtual Keyboard dulu baru klik simpan"
-        };
+          type: 'warning',
+          message: 'Tutup Virtual Keyboard dulu baru klik simpan'
+        }
       }
     },
     showReworkDialog() {
-      this.reworkDialog = true;
+      this.reworkDialog = true
     },
     resetReworkDialog() {
-      this.reworkValue = 0;
-      this.reworkDialog = false;
+      this.reworkValue = 0
+      this.reworkDialog = false
     }
   }
-};
+}
 </script>
 <style>
 .select-line {

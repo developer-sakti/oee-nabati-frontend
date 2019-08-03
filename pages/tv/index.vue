@@ -245,25 +245,25 @@
   </v-container>
 </template>
 <script>
-import defaultMixins from "~/mixins/default.mixins";
+import defaultMixins from '~/mixins/default.mixins'
 export default {
-  layout: "tv",
+  layout: 'tv',
   mixins: [defaultMixins],
   data() {
     return {
       target: 11500,
-      oee: "100,00%",
+      oee: '100,00%',
       good: 1250,
-      avail: "100,00%",
+      avail: '100,00%',
       loss: 1370,
-      perf: "100,00%",
-      mttf: "00:10:00",
-      qual: "100,00%",
-      mttr: "00:10:00",
-      mtbf: "00:10:00"
-    };
+      perf: '100,00%',
+      mttf: '00:10:00',
+      qual: '100,00%',
+      mttr: '00:10:00',
+      mtbf: '00:10:00'
+    }
   }
-};
+}
 </script>
 <style>
 .downtime {

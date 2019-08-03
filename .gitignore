@@ -37,6 +37,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+.nuxt/
 
 # TypeScript v1 declaration files
 typings/
@@ -77,12 +78,10 @@ dist
 # Serverless directories
 .serverless
 
-# IDE / Editor
+# IDE
 .idea
-.editorconfig
 
 # Service worker
 sw.*
 
-# Mac OSX
-.DS_Store
+./node_modules
