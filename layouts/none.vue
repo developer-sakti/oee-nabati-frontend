@@ -6,5 +6,6 @@
 <style>
 #none {
   overflow: hidden;
+  background: #ffffff !important;
 }
 </style>

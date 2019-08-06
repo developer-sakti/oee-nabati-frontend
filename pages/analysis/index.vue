@@ -2,7 +2,7 @@
   <v-container>
     <v-layout>
       <v-flex>
-        <span>dashboard</span>
+        <span>analisys</span>
       </v-flex>
     </v-layout>
   </v-container>

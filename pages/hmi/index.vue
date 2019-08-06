@@ -187,7 +187,7 @@
           <v-layout row justify-center class="no-select">
             <v-flex xs12 sm12 md12 class="px-3">
               <v-layout justify-center row>
-                <v-flex v-if="alert.status" xs12 sm12 md6>
+                <v-flex v-if="alert.status" xs12 sm12 md12>
                   <alert
                     :message="alert.message"
                     :type="alert.type"
@@ -363,6 +363,15 @@
           </v-btn>
         </v-card-title>
         <v-card-text class="px-5">
+          <v-layout justify-center row class="mb-3">
+            <v-flex v-if="alert.status" xs12 sm12 md12>
+              <alert
+                :message="alert.message"
+                :type="alert.type"
+                @dismissed="onDismissed"
+              />
+            </v-flex>
+          </v-layout>
           <v-layout row justify-center align-center class="no-select px-5">
             <v-flex xs5 sm5 md5 class="pl-5">
               <span class="subheading font-weight-regular">
@@ -407,7 +416,7 @@
             large
             round
             class="mx-5 no-select"
-            @click="resetDowntimeDialog()"
+            @click="storeRework()"
           >
             simpan
           </v-btn>
@@ -455,6 +464,7 @@ export default {
       hmis: [],
       connected: true,
       shift: 'Shift 1',
+      poActiveId: null,
       downtimeDialog: false,
       downtimeDate: null,
       downtimePOId: null,
@@ -597,9 +607,13 @@ export default {
             this.connected = true
             if (res.data === '') {
               this.shift = 'Shift -'
+            } else {
+              this.poActiveId = res.data.id
+              this.shift = res.data.shift.shift_name
             }
           } else {
             this.connected = false
+            this.poActiveId = null
           }
         })
     },
@@ -622,12 +636,14 @@ export default {
     showKeyboard(e) {
       this.input = e.target
       this.downtimeDuration = e.target
+      this.reworkValue = e.target
       this.keyboard.layout = e.target.dataset.layout
       this.keyboard.visible = true
     },
     accept(text) {
       this.input = text
       this.downtimeDuration = text
+      this.reworkValue = text
       this.hideKeyboard()
     },
     hideKeyboard() {
@@ -702,11 +718,57 @@ export default {
         }
       }
     },
+    storeRework() {
+      if (!this.keyboard.visible) {
+        if (this.poActiveId === null) {
+          this.alert = {
+            status: true,
+            type: 'warning',
+            message: 'Tidak ada PO Aktif di line ini'
+          }
+        } else if (this.reworkValue == 0) {
+          this.alert = {
+            status: true,
+            type: 'warning',
+            message: 'Rework value harus diisi'
+          }
+        } else {
+          this.$axios
+            .post(process.env.SERVICE_URL + '/lakban/rework-line', {
+              total: this.reworkValue,
+              rencanaProduksiId: this.poActiveId
+            })
+            .then(res => {
+              if (res.data.success) {
+                this.resetReworkDialog()
+                this.snackbar = {
+                  status: true,
+                  text: 'Data rework ditambahkan',
+                  color: 'success'
+                }
+              } else {
+                this.snackbar = {
+                  status: true,
+                  text: 'Data rework gagal ditambahkan',
+                  color: 'error'
+                }
+              }
+            })
+        }
+      } else {
+        this.alert = {
+          status: true,
+          type: 'warning',
+          message: 'Tutup Virtual Keyboard dulu baru klik simpan'
+        }
+      }
+    },
     showReworkDialog() {
       this.reworkDialog = true
     },
     resetReworkDialog() {
       this.reworkValue = 0
+      this.downtimeDuration = 0
       this.reworkDialog = false
     }
   }

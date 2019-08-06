@@ -3,55 +3,48 @@
     <v-content>
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
-          <v-flex xs12 sm10 md8 lg6>
+          <v-flex xs10 sm8 md6>
             <v-card class="elevation-5 px-5 pt-3">
               <v-card-text>
-                <div class="layout column align-center">
-                  <v-img src="/process.png" width="180" height="80" />
-                  <h1 class="flex my-4 primary--text">
+                <div class="layout column align-center mb-3">
+                  <v-responsive>
+                    <v-img src="/process.png" width="180" height="80" />
+                  </v-responsive>
+                  <span
+                    class="flex my-4 primary--text display-2 font-weight-bold hidden-sm-and-down"
+                  >
                     OEE Nabati
-                  </h1>
+                  </span>
+                  <span
+                    class="flex my-4 primary--text headline font-weight-bold idden-md-and-up"
+                  >
+                    OEE Nabati
+                  </span>
                 </div>
-                <!-- <v-layout v-if="error.status">
-                  <v-flex xs12 md12>
-                    <alert
-                      :text="error.message"
-                      type="error"
-                      @dismissed="onDismissed"
-                    />
-                  </v-flex>
-                </v-layout> -->
                 <form @submit.prevent="login">
                   <v-text-field
-                    append-icon="person"
+                    prepend-inner-icon="person"
                     name="username"
                     label="Username"
                     type="text"
+                    solo
+                    flat
                     required
                   />
                   <v-text-field
                     id="password"
-                    append-icon="lock"
+                    prepend-inner-icon="lock"
+                    solo
+                    flat
                     name="password"
                     label="Password"
                     type="password"
                     required
                   />
                   <v-layout row wrap>
-                    <v-flex xs12 sm12 md12>
-                      <v-btn block color="primary" type="submit">
+                    <v-flex xs12 sm12 md12 class="pb-3">
+                      <v-btn block color="primary" type="submit" large>
                         Login
-                      </v-btn>
-                    </v-flex>
-                    <v-flex xs12 sm12 md12 class="text-xs-center">
-                      <span class="subheading">Belum punya akun ?</span>
-                      <v-btn
-                        flat
-                        class="text-none"
-                        color="primary"
-                        to="/register"
-                      >
-                        Daftar disini
                       </v-btn>
                     </v-flex>
                   </v-layout>
@@ -70,14 +63,18 @@ export default {
   layout: 'none'
 }
 </script>
-<style scoped lang="css">
+<style>
 #login {
   height: 50%;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  content: "";
+  content: '';
   z-index: 0;
+}
+.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
+  border-radius: 5px !important;
+  background: #e0e0e0 !important;
 }
 </style>

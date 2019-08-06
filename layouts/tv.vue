@@ -1,10 +1,11 @@
 <template>
-  <v-app id="none" dark>
+  <v-app id="tv" dark>
     <v-content> <nuxt /> </v-content>
   </v-app>
 </template>
 <style>
-#none {
+#tv {
   overflow: hidden;
+  background: #303030 !important;
 }
 </style>
