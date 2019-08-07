@@ -794,9 +794,6 @@ export default {
   border-radius: 20px !important;
   background-color: #e5e5e5 !important;
 }
-.select-option .v-input__control .v-text-field__details {
-  display: none;
-}
 
 .__bar-wrap-is-vertical {
   right: 14px !important;

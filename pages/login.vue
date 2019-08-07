@@ -5,22 +5,21 @@
         <v-layout align-center justify-center>
           <v-flex xs10 sm8 md6>
             <v-card class="elevation-5 px-5 pt-3">
+              <v-card-title>
+                <v-layout justify-center>
+                  <v-flex xs12 sm8 md6>
+                    <v-responsive>
+                      <v-img
+                        src="/mvl.png"
+                        max-width="350"
+                        max-height="150"
+                        class="text-xs-center"
+                      />
+                    </v-responsive>
+                  </v-flex>
+                </v-layout>
+              </v-card-title>
               <v-card-text>
-                <div class="layout column align-center mb-3">
-                  <v-responsive>
-                    <v-img src="/process.png" width="180" height="80" />
-                  </v-responsive>
-                  <span
-                    class="flex my-4 primary--text display-2 font-weight-bold hidden-sm-and-down"
-                  >
-                    OEE Nabati
-                  </span>
-                  <span
-                    class="flex my-4 primary--text headline font-weight-bold idden-md-and-up"
-                  >
-                    OEE Nabati
-                  </span>
-                </div>
                 <form @submit.prevent="login">
                   <v-text-field
                     prepend-inner-icon="person"
@@ -50,6 +49,18 @@
                   </v-layout>
                 </form>
               </v-card-text>
+              <v-card-actions>
+                <v-layout row wrap>
+                  <v-flex xs8 sm9 md10 class="text-xs-right">
+                    <span class="mr-3">Supported by</span>
+                  </v-flex>
+                  <v-flex xs4 sm3 md2>
+                    <v-responsive>
+                      <v-img src="/logo.png" />
+                    </v-responsive>
+                  </v-flex>
+                </v-layout>
+              </v-card-actions>
             </v-card>
           </v-flex>
         </v-layout>

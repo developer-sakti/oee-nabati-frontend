@@ -22,9 +22,9 @@
         </v-card>
       </v-flex>
       <v-flex xs12 sm12 md12>
-        <v-card color="success" dark height="75vh">
+        <v-card color="success" dark height="60vh">
           <v-card-title>
-            <span class="title">Quality Product Rate</span>
+            <span class="title">PETA</span>
           </v-card-title>
           <v-card-text>
             <span>Detail</span>

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer
+    <!-- <v-navigation-drawer
       mini-variant
       app
       clipped
@@ -32,18 +32,61 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-    </v-navigation-drawer>
-    <v-toolbar color="primary" dark class="hidden-md-and-up">
-      <v-toolbar-title>OEE Nabati</v-toolbar-title>
+    </v-navigation-drawer> -->
+    <v-toolbar color="white" app>
+      <v-btn icon class="hidden-md-and-up">
+        <v-icon>menu</v-icon>
+      </v-btn>
+      <v-toolbar-title>
+        <v-img src="/logo.png" width="80" height="45" />
+      </v-toolbar-title>
+      <v-toolbar-items class="hidden-sm-and-down ml-5">
+        <v-btn flat class="text-none subheading" to="/home">Home</v-btn>
+        <v-menu offset-y>
+          <template slot="activator">
+            <v-btn flat class="text-none subheading">
+              Planning <v-icon class="ml-2">mdi-menu-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-tile to="/plan/product">
+              <v-list-tile-title>Production</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile to="/plan/downtime">
+              <v-list-tile-title>Downtime</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+        <v-btn flat class="text-none subheading" to="/production">
+          Production
+        </v-btn>
+        <v-btn flat class="text-none subheading" to="/analysis">Analysis</v-btn>
+        <v-btn flat class="text-none subheading" to="/report">Report</v-btn>
+        <v-menu offset-y>
+          <template slot="activator">
+            <v-btn flat class="text-none subheading">
+              Setting <v-icon class="ml-2">mdi-menu-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-tile to="/setting/downtimeCategory">
+              <v-list-tile-title>Downtime Category</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile to="/setting/downtimeReason">
+              <v-list-tile-title>Downtime Reason</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </v-toolbar-items>
       <v-spacer />
       <v-btn icon to="/profile">
         <v-icon>mdi-account-outline</v-icon>
       </v-btn>
       <v-btn icon @click="logoutDialog = true">
-        <v-icon>mdi-export</v-icon>
+        <v-icon color="orange darken-3">mdi-export</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-dialog v-model="logoutDialog" max-width="300">
+    <v-dialog v-model="logoutDialog" max-width="400">
       <v-card>
         <v-card-text>
           <span class="subheading">
@@ -72,38 +115,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-content>
+    <v-content class="pb-0">
       <nuxt />
     </v-content>
-    <v-bottom-nav
-      :active.sync="bottomNav"
-      :value="true"
-      color="primary"
-      fixed
-      app
-      class="hidden-md-and-up"
-    >
-      <v-btn dark to="/home" flat>
-        <!-- <span class="caption">Home</span> -->
-        <v-icon size="22">mdi-home-outline</v-icon>
-      </v-btn>
-      <v-btn dark flat value="plan" to="/plan">
-        <!-- <span class="caption">Planning</span> -->
-        <v-icon size="22">mdi-table-edit</v-icon>
-      </v-btn>
-      <v-btn dark flat value="production" to="/production">
-        <!-- <span class="caption">Production</span> -->
-        <v-icon size="22">mdi-cube-send</v-icon>
-      </v-btn>
-      <v-btn dark flat value="analysis" to="/analysis">
-        <!-- <span class="caption">Analysis</span> -->
-        <v-icon size="22">mdi-chart-line</v-icon>
-      </v-btn>
-      <v-btn dark flat value="report" to="/report">
-        <!-- <span class="caption">Report</span> -->
-        <v-icon size="22">mdi-cloud-print-outline</v-icon>
-      </v-btn>
-    </v-bottom-nav>
   </v-app>
 </template>
 

@@ -29,7 +29,7 @@ input[type="number"] {
 
 .card-rounded {
   border: 1px solid lightblue !important;
-  border-radius: 15px;
+  border-radius: 15px !important;
 }
 
 .grey-background{
@@ -41,5 +41,8 @@ input[type="number"] {
   background-color: #e5e5e5 !important;
 }
 .round-text-field .v-input__control .v-text-field__details {
+  display: none;
+}
+.select-option .v-input__control .v-text-field__details {
   display: none;
 }
