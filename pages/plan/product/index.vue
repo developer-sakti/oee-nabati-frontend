@@ -29,19 +29,20 @@
               <v-flex xs12 sm12 md6>
                 <v-select label="SKU" solo light flat />
               </v-flex>
+
+              <v-flex xs12 sm12 md6>
+                <v-text-field solo light flat placeholder="Target" />
+              </v-flex>
               <v-flex xs12 sm12 md6>
                 <v-text-field solo light flat placeholder="Start" />
               </v-flex>
               <v-flex xs12 sm12 md6>
                 <v-text-field solo light flat placeholder="End" />
               </v-flex>
-              <v-flex xs12 sm12 md4>
-                <v-text-field solo light flat placeholder="Target" />
-              </v-flex>
-              <v-flex xs12 sm12 md4>
+              <v-flex xs12 sm12 md6>
                 <v-text-field solo light flat placeholder="Standart CT" />
               </v-flex>
-              <v-flex xs12 sm12 md4>
+              <v-flex xs12 sm12 md6>
                 <v-text-field solo light flat placeholder="Bottle Neck CT" />
               </v-flex>
             </v-layout>
@@ -55,7 +56,7 @@
       </v-flex>
       <v-flex xs12 sm12 md6>
         <v-card>
-          <v-card-title class="blue lighten-2">
+          <v-card-title class="primary">
             <v-layout row wrap>
               <v-flex xs8 sm8 md8>
                 <span class="headline white--text">PO List</span>
@@ -66,16 +67,37 @@
             </v-layout>
           </v-card-title>
           <v-card-text class="py-0">
-            <v-list>
-              <template v-for="i in 5">
-                <v-list-tile :key="i">
-                  <v-list-tile-content>
-                    <span>PO#20190806 - Shift 1 - 06 Agu 2019</span>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-divider v-if="i < 5" :key="i" />
-              </template>
-            </v-list>
+            <v-layout>
+              <v-flex>
+                <v-card flat>
+                  <v-card-title class="title font-weight-regular">
+                    Active
+                  </v-card-title>
+                  <v-card-text class="cyan lighten-2 px-3">
+                    <v-layout>
+                      <v-flex xs2 sm2 md2>
+                        Line
+                      </v-flex>
+                      <v-flex xs1 sm1 md1>
+                        :
+                      </v-flex>
+                      <v-flex xs3 sm3 md3>
+                        23
+                      </v-flex>
+                      <!-- <v-flex xs2 sm2 md2>
+                        Line
+                      </v-flex>
+                      <v-flex xs1 sm1 md1>
+                        :
+                      </v-flex>
+                      <v-flex xs3 sm3 md3>
+                        23
+                      </v-flex> -->
+                    </v-layout>
+                  </v-card-text>
+                </v-card>
+              </v-flex>
+            </v-layout>
           </v-card-text>
         </v-card>
       </v-flex>

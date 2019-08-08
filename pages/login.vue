@@ -20,10 +20,16 @@
                 </v-layout>
               </v-card-title>
               <v-card-text>
-                <form @submit.prevent="login">
+                <alert
+                  v-if="alert.status"
+                  :message="alert.message"
+                  :type="alert.type"
+                />
+                <v-form ref="form" v-model="valid" lazy-validation>
                   <v-text-field
+                    v-model="form.username"
+                    :rules="[rules.required]"
                     prepend-inner-icon="person"
-                    name="username"
                     label="Username"
                     type="text"
                     solo
@@ -31,23 +37,29 @@
                     required
                   />
                   <v-text-field
-                    id="password"
+                    v-model="form.password"
+                    :rules="[rules.required]"
                     prepend-inner-icon="lock"
                     solo
                     flat
-                    name="password"
                     label="Password"
                     type="password"
                     required
                   />
                   <v-layout row wrap>
                     <v-flex xs12 sm12 md12 class="pb-3">
-                      <v-btn block color="primary" type="submit" large>
+                      <v-btn
+                        block
+                        color="primary"
+                        large
+                        :loading="loading"
+                        @click="login()"
+                      >
                         Login
                       </v-btn>
                     </v-flex>
                   </v-layout>
-                </form>
+                </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-layout row wrap>
@@ -70,8 +82,54 @@
 </template>
 
 <script>
+import defaultMixins from '~/mixins/default.mixins'
 export default {
-  layout: 'none'
+  layout: 'none',
+  mixins: [defaultMixins],
+  data() {
+    return {
+      form: {
+        username: null,
+        password: null
+      },
+      valid: true,
+      loading: false,
+      rules: {
+        required: value => !!value || 'Field is required'
+      }
+    }
+  },
+  methods: {
+    login() {
+      if (this.$refs.form.validate()) {
+        this.snackbar = true
+        this.loading = true
+        this.$axios
+          .post(process.env.SERVICE_URL + '/auth/login', this.form)
+          .then(res => {
+            if (res.status == 201) {
+              this.$store.dispatch('setAuth', res.data)
+              this.$router.push('/home')
+            } else {
+              this.alert = {
+                status: true,
+                message: 'Login failed',
+                type: 'error'
+              }
+            }
+            this.loading = false
+          })
+          .catch(() => {
+            this.alert = {
+              status: true,
+              message: 'Login failed',
+              type: 'error'
+            }
+            this.loading = false
+          })
+      }
+    }
+  }
 }
 </script>
 <style>

@@ -1,42 +1,72 @@
 <template>
   <v-app>
-    <!-- <v-navigation-drawer
-      mini-variant
-      app
-      clipped
-      fixed
-      class="hidden-sm-and-down"
-    >
+    <v-navigation-drawer v-model="drawer" clipped app>
       <v-list>
-        <v-list-tile
-          v-for="(menu, i) in menus"
-          :key="i"
-          exact
-          router
-          :to="menu.route"
-          class="py-2"
-        >
+        <v-list-tile class="py-2" to="/home">
           <v-list-tile-action>
-            <v-icon size="26">{{ menu.icon }}</v-icon>
+            <v-icon size="26">mdi-home-outline</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title v-text="menu.text" />
+            <v-list-tile-title>Home</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile class="py-2" @click="logoutDialog = true">
+        <v-list-group prepend-icon="mdi-table-edit">
+          <template v-slot:activator>
+            <v-list-tile>
+              <v-list-tile-title>Planning</v-list-tile-title>
+            </v-list-tile>
+          </template>
+          <v-list-tile class="ml-5 pl-2" to="/plan/product">
+            <v-list-tile-title>Production</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile class="ml-5 pl-2" to="/plan/downtime">
+            <v-list-tile-title>Downtime</v-list-tile-title>
+          </v-list-tile>
+        </v-list-group>
+        <v-list-tile class="py-2" to="/production">
           <v-list-tile-action>
-            <v-icon size="26" color="#E57373">mdi-logout-variant</v-icon>
+            <v-icon size="26">mdi-cube-send</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>Logout</v-list-tile-title>
+            <v-list-tile-title>Production</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
+        <v-list-tile class="py-2" to="/analysis">
+          <v-list-tile-action>
+            <v-icon size="26">mdi-chart-line</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Analysis</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile class="py-2" to="/report">
+          <v-list-tile-action>
+            <v-icon size="26">mdi-cloud-print-outline</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Report</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-group prepend-icon="mdi-settings">
+          <template v-slot:activator>
+            <v-list-tile>
+              <v-list-tile-title>Setting</v-list-tile-title>
+            </v-list-tile>
+          </template>
+          <v-list-tile class="ml-5 pl-2" to="/setting/sku">
+            <v-list-tile-title>SKU</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile class="ml-5 pl-2" to="/setting/downtimeCategory">
+            <v-list-tile-title>Downtime Category</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile class="ml-5 pl-2" to="/setting/downtimeReason">
+            <v-list-tile-title>Downtime Reason</v-list-tile-title>
+          </v-list-tile>
+        </v-list-group>
       </v-list>
-    </v-navigation-drawer> -->
+    </v-navigation-drawer>
     <v-toolbar color="white" app>
-      <v-btn icon class="hidden-md-and-up">
-        <v-icon>menu</v-icon>
-      </v-btn>
+      <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer" />
       <v-toolbar-title>
         <v-img src="/logo.png" width="80" height="45" />
       </v-toolbar-title>
@@ -69,6 +99,9 @@
             </v-btn>
           </template>
           <v-list>
+            <v-list-tile to="/setting/sku">
+              <v-list-tile-title>SKU</v-list-tile-title>
+            </v-list-tile>
             <v-list-tile to="/setting/downtimeCategory">
               <v-list-tile-title>Downtime Category</v-list-tile-title>
             </v-list-tile>
@@ -126,7 +159,7 @@ export default {
   data() {
     return {
       logoutDialog: false,
-      bottomNav: 'home',
+      drawer: false,
       menus: [
         { icon: 'mdi-home-outline', text: 'Home', route: 'home' },
         { icon: 'mdi-table-edit', text: 'Planning', route: 'plan' },
@@ -139,6 +172,7 @@ export default {
   },
   methods: {
     logout() {
+      this.$store.dispatch('logout')
       this.$router.push('/login')
     }
   }
