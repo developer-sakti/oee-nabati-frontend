@@ -41,7 +41,8 @@ export default {
     '@/plugins/vuetify',
     '~/plugins/components-register',
     '~/plugins/vue-scroll',
-    '~/plugins/vue-keyboard'
+    '~/plugins/vue-keyboard',
+    { src: '~/plugins/nuxt-client.js', ssr: false }
   ],
   // https://nuxtjs.org/api/configuration-watch
   watch: ['~/vuex/**/*.js', '~/mixins/**/*.js'],

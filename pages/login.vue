@@ -5,26 +5,31 @@
         <v-layout align-center justify-center>
           <v-flex xs10 sm8 md6>
             <v-card class="elevation-5 px-5 pt-3">
+              <v-card-title>
+                <v-layout justify-center>
+                  <v-flex xs12 sm8 md6>
+                    <v-responsive>
+                      <v-img
+                        src="/mvl.png"
+                        max-width="350"
+                        max-height="150"
+                        class="text-xs-center"
+                      />
+                    </v-responsive>
+                  </v-flex>
+                </v-layout>
+              </v-card-title>
               <v-card-text>
-                <div class="layout column align-center mb-3">
-                  <v-responsive>
-                    <v-img src="/process.png" width="180" height="80" />
-                  </v-responsive>
-                  <span
-                    class="flex my-4 primary--text display-2 font-weight-bold hidden-sm-and-down"
-                  >
-                    OEE Nabati
-                  </span>
-                  <span
-                    class="flex my-4 primary--text headline font-weight-bold idden-md-and-up"
-                  >
-                    OEE Nabati
-                  </span>
-                </div>
-                <form @submit.prevent="login">
+                <alert
+                  v-if="alert.status"
+                  :message="alert.message"
+                  :type="alert.type"
+                />
+                <v-form ref="form" v-model="valid" lazy-validation>
                   <v-text-field
+                    v-model="form.username"
+                    :rules="[rules.required]"
                     prepend-inner-icon="person"
-                    name="username"
                     label="Username"
                     type="text"
                     solo
@@ -32,24 +37,42 @@
                     required
                   />
                   <v-text-field
-                    id="password"
+                    v-model="form.password"
+                    :rules="[rules.required]"
                     prepend-inner-icon="lock"
                     solo
                     flat
-                    name="password"
                     label="Password"
                     type="password"
                     required
                   />
                   <v-layout row wrap>
                     <v-flex xs12 sm12 md12 class="pb-3">
-                      <v-btn block color="primary" type="submit" large>
+                      <v-btn
+                        block
+                        color="primary"
+                        large
+                        :loading="loading"
+                        @click="login()"
+                      >
                         Login
                       </v-btn>
                     </v-flex>
                   </v-layout>
-                </form>
+                </v-form>
               </v-card-text>
+              <v-card-actions>
+                <v-layout row wrap>
+                  <v-flex xs8 sm9 md10 class="text-xs-right">
+                    <span class="mr-3">Supported by</span>
+                  </v-flex>
+                  <v-flex xs4 sm3 md2>
+                    <v-responsive>
+                      <v-img src="/logo.png" />
+                    </v-responsive>
+                  </v-flex>
+                </v-layout>
+              </v-card-actions>
             </v-card>
           </v-flex>
         </v-layout>
@@ -59,8 +82,54 @@
 </template>
 
 <script>
+import defaultMixins from '~/mixins/default.mixins'
 export default {
-  layout: 'none'
+  layout: 'none',
+  mixins: [defaultMixins],
+  data() {
+    return {
+      form: {
+        username: null,
+        password: null
+      },
+      valid: true,
+      loading: false,
+      rules: {
+        required: value => !!value || 'Field is required'
+      }
+    }
+  },
+  methods: {
+    login() {
+      if (this.$refs.form.validate()) {
+        this.snackbar = true
+        this.loading = true
+        this.$axios
+          .post(process.env.SERVICE_URL + '/auth/login', this.form)
+          .then(res => {
+            if (res.status == 201) {
+              this.$store.dispatch('setAuth', res.data)
+              this.$router.push('/home')
+            } else {
+              this.alert = {
+                status: true,
+                message: 'Login failed',
+                type: 'error'
+              }
+            }
+            this.loading = false
+          })
+          .catch(() => {
+            this.alert = {
+              status: true,
+              message: 'Login failed',
+              type: 'error'
+            }
+            this.loading = false
+          })
+      }
+    }
+  }
 }
 </script>
 <style>
