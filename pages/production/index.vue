@@ -7,3 +7,8 @@
     </v-layout>
   </v-container>
 </template>
+<script>
+export default {
+  middleware: ['auth']
+}
+</script>

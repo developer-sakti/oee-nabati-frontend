@@ -39,6 +39,11 @@ export default {
     }, 1000)
     this.setDateTime()
   },
+  computed: {
+    user() {
+      return this.$store.getters.user
+    }
+  },
   methods: {
     setDateTime() {
       const date = new Date()
