@@ -300,6 +300,9 @@ export default {
           this.limitTime.end = parseInt(temp[0] - 1)
         }
       }
+    },
+    lineListSelectedId() {
+      this.getPOActive()
     }
   },
   created() {
@@ -367,6 +370,7 @@ export default {
         )
         .then(res => {
           if (res.status == 200) {
+            this.polist.active = []
             if (res.data === '') {
               this.noActivePo = true
               this.alert = {
@@ -375,7 +379,6 @@ export default {
                 type: 'info'
               }
             } else {
-              this.polist.active = []
               this.polist.active.push(res.data)
             }
           }
