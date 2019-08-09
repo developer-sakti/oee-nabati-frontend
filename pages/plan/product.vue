@@ -159,7 +159,11 @@
                     flat
                     placeholder="Standart CT"
                     type="number"
-                  />
+                  >
+                    <template v-slot:append>
+                      <span class="black--text mr-3">menit</span>
+                    </template>
+                  </v-text-field>
                 </v-flex>
                 <v-flex xs12 sm12 md6>
                   <v-text-field
@@ -170,7 +174,11 @@
                     flat
                     placeholder="Bottle Neck CT"
                     type="number"
-                  />
+                  >
+                    <template v-slot:append>
+                      <span class="black--text mr-3">menit</span>
+                    </template>
+                  </v-text-field>
                 </v-flex>
               </v-layout>
             </v-card-text>
@@ -192,40 +200,38 @@
                 <span class="headline white--text">PO List</span>
               </v-flex>
               <v-flex xs4 sm4 md4 class="pa-0">
-                <v-select label="Line" solo light flat />
+                <v-select
+                  v-model="lineListSelectedId"
+                  label="Line"
+                  solo
+                  light
+                  flat
+                  :items="line"
+                  item-text="name"
+                  item-value="id"
+                />
               </v-flex>
             </v-layout>
           </v-card-title>
           <v-card-text class="py-0">
-            <v-layout>
+            <v-layout column>
               <v-flex>
-                <v-card flat>
-                  <v-card-title class="title font-weight-regular">
-                    Active
-                  </v-card-title>
-                  <v-card-text class="cyan lighten-2 px-3">
-                    <v-layout>
-                      <v-flex xs2 sm2 md2>
-                        Line
-                      </v-flex>
-                      <v-flex xs1 sm1 md1>
-                        :
-                      </v-flex>
-                      <v-flex xs3 sm3 md3>
-                        23
-                      </v-flex>
-                      <!-- <v-flex xs2 sm2 md2>
-                        Line
-                      </v-flex>
-                      <v-flex xs1 sm1 md1>
-                        :
-                      </v-flex>
-                      <v-flex xs3 sm3 md3>
-                        23
-                      </v-flex> -->
-                    </v-layout>
-                  </v-card-text>
-                </v-card>
+                <po-list :title="polist.title1" :po="polist.active" />
+              </v-flex>
+              <v-flex v-if="noActivePo">
+                <v-alert v-model="alert.status" :type="alert.type">
+                  {{ alert.message }}
+                </v-alert>
+              </v-flex>
+            </v-layout>
+            <v-layout column>
+              <v-flex>
+                <po-list :title="polist.title2" :po="polist.waiting" />
+              </v-flex>
+              <v-flex v-if="noListPo">
+                <v-alert v-model="alert.status" :type="alert.type">
+                  {{ alert.message }}
+                </v-alert>
               </v-flex>
             </v-layout>
           </v-card-text>
@@ -257,6 +263,9 @@ export default {
         shiftFirst: value =>
           !!this.shiftSelected || 'Shift must be selected first'
       },
+      lineListSelectedId: null,
+      noActivePo: false,
+      noListPo: false,
       form: {
         po_number: null,
         standart_ct: null,
@@ -269,6 +278,12 @@ export default {
         lineId: null,
         skuId: null,
         supervisorId: null
+      },
+      polist: {
+        title1: 'Active',
+        active: [],
+        title2: 'Waiting List',
+        waiting: []
       }
     }
   },
@@ -285,6 +300,9 @@ export default {
           this.limitTime.end = parseInt(temp[0] - 1)
         }
       }
+    },
+    lineListSelectedId() {
+      this.getPOActive()
     }
   },
   created() {
@@ -294,10 +312,19 @@ export default {
     })
     this.$axios.get(process.env.SERVICE_URL + '/line').then(res => {
       this.line = res.data
+      this.lineListSelectedId = res.data[0].id
+      this.getPOActive()
     })
     this.$axios.get(process.env.SERVICE_URL + '/initial-sku').then(res => {
       this.sku = res.data
     })
+  },
+  mounted() {
+    setInterval(() => {
+      if (this.hmi !== null) {
+        this.getPOActive()
+      }
+    }, 5000)
   },
   methods: {
     setTime(v) {
@@ -310,7 +337,7 @@ export default {
           .post(process.env.SERVICE_URL + '/rencana-produksi', this.form)
           .then(res => {
             if (res.data.success) {
-              this.resetReworkDialog()
+              this.resetForm()
               this.snackbar = {
                 status: true,
                 text: 'Order berhasil disimpan',
@@ -329,6 +356,33 @@ export default {
     },
     resetForm() {
       this.$refs.form.reset()
+    },
+    getPOActive() {
+      this.$axios
+        .get(
+          process.env.SERVICE_URL +
+            '/rencana-produksi/active?date=' +
+            this.currentDate +
+            '&time=' +
+            this.currentTime +
+            '+&line_id=' +
+            this.lineListSelectedId
+        )
+        .then(res => {
+          if (res.status == 200) {
+            this.polist.active = []
+            if (res.data === '') {
+              this.noActivePo = true
+              this.alert = {
+                status: true,
+                message: 'There is no production order active',
+                type: 'info'
+              }
+            } else {
+              this.polist.active.push(res.data)
+            }
+          }
+        })
     }
   }
 }
