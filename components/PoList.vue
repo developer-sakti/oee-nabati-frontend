@@ -24,7 +24,7 @@
         </v-flex>
         <v-flex xs3 sm3 md3> : {{ formatDate(item.date) }} </v-flex>
         <v-flex xs2 sm2 md3>
-          Production Order Number
+          PO Number
         </v-flex>
         <v-flex xs3 sm3 md3> : {{ item.po_number }} </v-flex>
       </v-layout>
@@ -50,11 +50,11 @@
       </v-layout>
       <v-layout>
         <v-flex xs2 sm2 md3>
-          Standart Cycle Time
+          Standart CT
         </v-flex>
         <v-flex xs3 sm3 md3> : {{ item.standart_ct }} minutes </v-flex>
         <v-flex xs2 sm2 md3>
-          Bottle Neck Cycle Time
+          Bottle Neck CT
         </v-flex>
         <v-flex xs3 sm3 md3> : {{ item.bottleneck_ct }} minutes </v-flex>
       </v-layout>
@@ -70,7 +70,9 @@
   </v-card>
 </template>
 <script>
+import datetime from '~/mixins/datetime'
 export default {
+  mixins: [datetime],
   props: {
     title: {
       type: String,
@@ -79,26 +81,6 @@ export default {
     po: {
       type: Array,
       required: true
-    }
-  },
-  methods: {
-    formatDate(date) {
-      const month = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sept',
-        'Oct',
-        'Nov',
-        'Dec'
-      ]
-      const temp = date.split('-')
-      return temp[2] + ' ' + month[parseInt(temp[1]) - 1] + ' ' + temp[0]
     }
   }
 }

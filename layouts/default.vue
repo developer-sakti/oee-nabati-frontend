@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer v-model="drawer" clipped app>
       <v-list>
-        <v-list-tile class="py-2" to="/home">
+        <v-list-tile class="py-2" to="/">
           <v-list-tile-action>
             <v-icon size="26">mdi-home-outline</v-icon>
           </v-list-tile-action>
@@ -71,7 +71,7 @@
         <v-img src="/logo.png" width="80" height="45" />
       </v-toolbar-title>
       <v-toolbar-items class="hidden-sm-and-down ml-5">
-        <v-btn flat class="text-none subheading" to="/home">Home</v-btn>
+        <v-btn flat class="text-none subheading" to="/">Home</v-btn>
         <v-menu offset-y>
           <template slot="activator">
             <v-btn flat class="text-none subheading">
@@ -161,7 +161,7 @@ export default {
       logoutDialog: false,
       drawer: false,
       menus: [
-        { icon: 'mdi-home-outline', text: 'Home', route: 'home' },
+        { icon: 'mdi-home-outline', text: 'Home', route: '/' },
         { icon: 'mdi-table-edit', text: 'Planning', route: 'plan' },
         { icon: 'mdi-cube-send', text: 'Production', route: 'production' },
         { icon: 'mdi-chart-line', text: 'Analysis', route: 'analysis' },

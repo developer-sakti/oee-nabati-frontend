@@ -245,6 +245,11 @@ import defaultMixins from '~/mixins/default.mixins'
 export default {
   mixins: [defaultMixins],
   middleware: ['auth'],
+  head() {
+    return {
+      title: 'Production Planning - Machine Vision'
+    }
+  },
   data() {
     return {
       startTime: false,
