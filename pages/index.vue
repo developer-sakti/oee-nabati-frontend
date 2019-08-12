@@ -1,61 +1,135 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
-      <div class="text-xs-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a href="https://vuetifyjs.com" target="_blank"> documentation </a>.
-          </p>
-          <p>
-            If you have questions, please join the official
-          </p>
-          <p>
-            Find a bug? Report it on the github
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-
-          <a href="https://github.com/nuxt/nuxt.js" target="_blank">
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" flat nuxt to="/inspire">
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+  <v-container grid-list-md fluid class="no-select">
+    <v-layout row wrap>
+      <v-flex xs12 sm12 md5>
+        <v-layout row wrap>
+          <v-flex xs12 sm12 md12>
+            <v-card color="blue darken-3" dark>
+              <v-card-title class="pb-0">
+                <span class="title">Productivity</span>
+              </v-card-title>
+              <v-card-text>
+                <span>Detail</span>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm12 md12>
+            <v-card color="indigo darken-3" dark>
+              <v-card-title class="pb-0">
+                <span class="title">Calculation</span>
+              </v-card-title>
+              <v-card-text>
+                <v-layout row wrap align-center>
+                  <v-flex xs6 sm6 md6>
+                    <v-layout justify-center>
+                      <v-progress-circular
+                        size="100"
+                        width="15"
+                        value="80"
+                        color="primary lighten-2"
+                      >
+                        <span class="headline white--text">80%</span>
+                      </v-progress-circular>
+                    </v-layout>
+                    <v-layout justify-center class="mt-1">
+                      <span class="subheading font-weight-bold">OEE</span>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex xs6 sm6 md6>
+                    <v-layout row wrap class="text-xs-center">
+                      <v-flex xs12 sm12 md6>
+                        <v-layout justify-center>
+                          <v-progress-circular
+                            size="45"
+                            width="5"
+                            value="80"
+                            color="warning lighten-2"
+                          >
+                            <span class="body-1 white--text">80%</span>
+                          </v-progress-circular>
+                        </v-layout>
+                        <v-layout justify-center class="mt-1">
+                          <span class="caption font-weight-bold">
+                            Availability
+                          </span>
+                        </v-layout>
+                      </v-flex>
+                      <v-flex xs12 sm12 md6>
+                        <v-layout justify-center>
+                          <v-progress-circular
+                            size="45"
+                            width="5"
+                            value="80"
+                            color="error lighten-2"
+                          >
+                            <span class="body-1 white--text">80%</span>
+                          </v-progress-circular>
+                        </v-layout>
+                        <v-layout justify-center class="mt-1">
+                          <span class="caption font-weight-bold">
+                            Performance
+                          </span>
+                        </v-layout>
+                      </v-flex>
+                      <v-flex xs12 sm12 md12>
+                        <v-layout justify-center class="mt-3">
+                          <v-progress-circular
+                            size="45"
+                            width="5"
+                            value="80"
+                            color="success lighten-2"
+                          >
+                            <span class="body-1 white--text">80%</span>
+                          </v-progress-circular>
+                        </v-layout>
+                        <v-layout justify-center class="mt-1">
+                          <span class="caption font-weight-bold">Quality</span>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex xs12 sm12 md7>
+        <v-card color="success" dark height="85vh">
+          <v-card-text class="pa-0">
+            <gmap-map :center="center" :map-type-id="mapTypeId" :zoom="5">
+              <gmap-marker
+                v-for="(item, index) in markers"
+                :key="index"
+                :position="item.position"
+                @click="center = item.position"
+              />
+            </gmap-map>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
-
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
 export default {
-  components: {
-    Logo,
-    VuetifyLogo
+  middleware: ['auth'],
+  data() {
+    return {
+      center: { lat: -3.350235, lng: 111.995865 },
+      mapTypeId: 'roadmap',
+      markers: [{ position: { lat: -6.9127778, lng: 107.6205556 } }]
+    }
   }
 }
 </script>
+
+<style>
+#map {
+  height: 60vh !important;
+}
+.vue-map-container {
+  height: 85vh;
+  width: 100%;
+}
+</style>

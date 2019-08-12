@@ -1,8 +1,8 @@
 <template>
   <v-container fluid grid-list-md>
     <v-layout row wrap align-center>
-      <v-flex xs12 sm12 md8>
-        <span class="display-1 font-weight-bold orange--text">Line List</span>
+      <v-flex xs12 sm12 md6>
+        <span class="display-1 font-weight-bold orange--text">Line Detail</span>
       </v-flex>
       <v-flex xs6 sm6 md2>
         <v-menu full-width>
@@ -12,7 +12,7 @@
               dark
               readonly
               :value="formatDate(dateFilter)"
-              background-color="indigo"
+              background-color="primary darken-3"
             />
           </template>
           <v-date-picker v-model="dateFilter" reactive />
@@ -24,16 +24,28 @@
           label="Shift"
           solo
           dark
-          background-color="primary"
+          background-color="primary lighten-2"
           :items="shift"
           item-text="shift_name"
+          item-value="id"
+        />
+      </v-flex>
+      <v-flex xs6 sm6 md2>
+        <v-select
+          v-model="lineFilterId"
+          label="Line"
+          solo
+          dark
+          background-color="primary"
+          :items="line"
+          item-text="name"
           item-value="id"
         />
       </v-flex>
     </v-layout>
     <v-layout class="mt-3" row wrap>
       <v-flex v-for="n in 3" :key="n" xs12 sm12 md12>
-        <v-card color="purple darken-2" dark to="/production/123">
+        <v-card color="purple darken-2" dark>
           <v-card-title class="card-header mx-3">
             <span class="headline blue--text font-weight-bold">Line 13</span>
           </v-card-title>
@@ -205,14 +217,16 @@
 </template>
 <script>
 import shift from '~/mixins/shift.select'
+import line from '~/mixins/line.select'
 import datetime from '~/mixins/datetime'
 export default {
-  mixins: [shift, datetime],
+  mixins: [shift, datetime, line],
   middleware: ['auth'],
   data() {
     return {
       dateFilter: null,
-      shiftFilterId: 1
+      shiftFilterId: 1,
+      lineFilterId: 1
     }
   },
   created() {
@@ -227,9 +241,5 @@ export default {
 .v-text-field.v-text-field--enclosed .v-text-field__details {
   margin-bottom: 0px important;
   display: none !important;
-}
-#production {
-  border-left: 2px solid white;
-  padding-left: 15px;
 }
 </style>

@@ -8,14 +8,14 @@ export default {
    ** Headers of the page
    */
   head: {
-    title: 'OEE Nabati',
+    title: 'Machine Vision',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: pkg.description }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/x-icon', href: '/mvl.ico' },
       {
         rel: 'stylesheet',
         href: '/css/font.css'
@@ -32,7 +32,6 @@ export default {
    ** Global CSS
    */
   css: ['~/assets/style/app.styl', '~/assets/css/main.css'],
-
   /*
    ** Plugins to load before mounting the App
    */
@@ -42,6 +41,7 @@ export default {
     '~/plugins/components-register',
     '~/plugins/vue-scroll',
     '~/plugins/vue-keyboard',
+    '~/plugins/google-maps',
     { src: '~/plugins/nuxt-client.js', ssr: false }
   ],
   // https://nuxtjs.org/api/configuration-watch
@@ -89,6 +89,7 @@ export default {
   },
   env: {
     SERVICE_URL:
-      'http://ec2-13-250-42-181.ap-southeast-1.compute.amazonaws.com/api/v1'
+      'http://ec2-13-250-42-181.ap-southeast-1.compute.amazonaws.com/api/v1',
+    GMAPS_KEY: 'AIzaSyAfFcmWP3mrvMxRhFgdX91lX8HN7q7HS3s'
   }
 }

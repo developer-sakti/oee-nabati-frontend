@@ -11,7 +11,9 @@
                 </v-avatar>
               </v-flex>
               <v-flex>
-                <span class="headline">Bahrul Amaruddin</span>
+                <span class="headline">{{
+                  user.firstname + ' ' + user.lastname
+                }}</span>
               </v-flex>
             </v-layout>
           </v-card-text>
@@ -39,18 +41,25 @@
           <v-window v-model="profileWindow">
             <v-window-item :value="0">
               <v-card-text>
-                <v-text-field label="Username" readonly clearable />
-                <v-text-field label="First Name" />
-                <v-text-field label="Last Name" />
-                <v-text-field label="Role" readonly />
-                <v-text-field label="Status" readonly />
+                <v-text-field
+                  label="Username"
+                  :value="user.username"
+                  readonly
+                />
+                <v-text-field
+                  label="First Name"
+                  :value="user.firstname"
+                  clearable
+                />
+                <v-text-field label="Last Name" :value="user.lastname" />
+                <v-text-field label="Role" readonly :value="user.role" />
               </v-card-text>
             </v-window-item>
             <v-window-item :value="1">
               <v-card-text>
-                <v-text-field label="Old Password" />
-                <v-text-field label="New Password" />
-                <v-text-field label="Confirm Password" />
+                <v-text-field label="Old Password" type="password" />
+                <v-text-field label="New Password" type="password" />
+                <v-text-field label="Confirm Password" type="password" />
               </v-card-text>
             </v-window-item>
           </v-window>
@@ -64,8 +73,10 @@
   </v-container>
 </template>
 <script>
+import defaultMixins from '~/mixins/default.mixins'
 export default {
   middleware: ['auth'],
+  mixins: [defaultMixins],
   data() {
     return {
       profileWindow: 0

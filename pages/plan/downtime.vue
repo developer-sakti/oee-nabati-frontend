@@ -7,6 +7,11 @@
 </template>
 <script>
 export default {
-  middleware: ['auth']
+  middleware: ['auth'],
+  head() {
+    return {
+      title: 'Downtime Planning - Machine Vision'
+    }
+  }
 }
 </script>
