@@ -32,6 +32,7 @@
                     prepend-inner-icon="person"
                     label="Username"
                     type="text"
+                    class="grey-field"
                     solo
                     flat
                     required
@@ -42,6 +43,7 @@
                     prepend-inner-icon="lock"
                     solo
                     flat
+                    class="grey-field"
                     label="Password"
                     type="password"
                     required
@@ -90,7 +92,8 @@ export default {
     return {
       form: {
         username: null,
-        password: null
+        password: null,
+        roleId: 1
       },
       valid: true,
       loading: false,
@@ -109,7 +112,7 @@ export default {
           .then(res => {
             if (res.status == 201) {
               this.$store.dispatch('setAuth', res.data)
-              this.$router.push('/home')
+              this.$router.push('/')
             } else {
               this.alert = {
                 status: true,
@@ -132,7 +135,7 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="css">
 #login {
   height: 50%;
   width: 100%;
@@ -142,7 +145,7 @@ export default {
   content: '';
   z-index: 0;
 }
-.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
+.theme--light.v-text-field--solo.grey-field > .v-input__control > .v-input__slot {
   border-radius: 5px !important;
   background: #e0e0e0 !important;
 }

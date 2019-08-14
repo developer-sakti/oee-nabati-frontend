@@ -218,7 +218,7 @@
               <v-flex>
                 <po-list :title="polist.title1" :po="polist.active" />
               </v-flex>
-              <v-flex v-if="noActivePo">
+              <v-flex v-if="polist.active.length == 0">
                 <v-alert v-model="alert.status" :type="alert.type">
                   {{ alert.message }}
                 </v-alert>
@@ -228,9 +228,12 @@
               <v-flex>
                 <po-list :title="polist.title2" :po="polist.waiting" />
               </v-flex>
-              <v-flex v-if="noListPo">
-                <v-alert v-model="alert.status" :type="alert.type">
-                  {{ alert.message }}
+              <v-flex v-if="polist.waiting.length == 0">
+                <v-alert
+                  v-model="alertWaiting.status"
+                  :type="alertWaiting.type"
+                >
+                  {{ alertWaiting.message }}
                 </v-alert>
               </v-flex>
             </v-layout>
@@ -269,8 +272,6 @@ export default {
           !!this.shiftSelected || 'Shift must be selected first'
       },
       lineListSelectedId: null,
-      noActivePo: false,
-      noListPo: false,
       form: {
         po_number: null,
         standart_ct: null,
@@ -289,6 +290,11 @@ export default {
         active: [],
         title2: 'Waiting List',
         waiting: []
+      },
+      alertWaiting: {
+        status: false,
+        type: 'info',
+        message: null
       }
     }
   },
@@ -377,23 +383,55 @@ export default {
           if (res.status == 200) {
             this.polist.active = []
             if (res.data === '') {
-              this.noActivePo = true
               this.alert = {
                 status: true,
-                message: 'There is no production order active',
+                message: 'There is no active production order',
                 type: 'info'
               }
             } else {
               this.polist.active.push(res.data)
             }
           }
+          this.getPOWaiting()
         })
+    },
+    getPOWaiting() {
+      if (this.polist.active.length > 0) {
+        this.$axios
+          .get(
+            process.env.SERVICE_URL +
+              '/rencana-produksi/waiting-list?poActiveId=' +
+              this.polist.active[0].id +
+              '&lineId=' +
+              this.lineListSelectedId
+          )
+          .then(res => {
+            if (res.status == 200) {
+              this.polist.waiting = []
+              if (res.data.length == 0) {
+                this.alertWaiting = {
+                  status: true,
+                  message: 'There is no waiting production order ',
+                  type: 'info'
+                }
+              } else {
+                this.polist.waiting = res.data
+              }
+            }
+          })
+      } else {
+        this.alertWaiting = {
+          status: true,
+          message: 'There is no waiting production order ',
+          type: 'info'
+        }
+      }
     }
   }
 }
 </script>
 
-<style>
+<style lang="css">
 .v-menu--inline {
   display: inline-block;
   width: 100% !important;

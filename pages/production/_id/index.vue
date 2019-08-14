@@ -43,174 +43,291 @@
         />
       </v-flex>
     </v-layout>
-    <v-layout class="mt-3" row wrap>
-      <v-flex v-for="n in 3" :key="n" xs12 sm12 md12>
-        <v-card color="purple darken-2" dark>
-          <v-card-title class="card-header mx-3">
-            <span class="headline blue--text font-weight-bold">Line 13</span>
-          </v-card-title>
-          <v-card-text>
-            <v-layout row wrap>
-              <v-flex xs12 sm12 md4>
-                <v-layout row wrap align-center>
-                  <v-flex xs6 sm6 md6>
-                    <v-layout justify-center>
-                      <v-progress-circular
-                        size="150"
-                        width="13"
-                        value="80"
-                        color="blue"
-                      >
-                        <span class="display-2 font-weight-bold white--text">
-                          80%
-                        </span>
-                      </v-progress-circular>
-                    </v-layout>
-                    <v-layout justify-center class="mt-1">
-                      <span class="subheading font-weight-bold">OEE</span>
-                    </v-layout>
+    <v-layout row wrap>
+      <v-flex xs12 sm12 md8>
+        <v-layout row wrap>
+          <v-flex xs12 sm12 md6>
+            <v-card color="primary" dark>
+              <v-card-title class="title font-weight-bold underline mx-3 px-0">
+                OEE
+              </v-card-title>
+              <v-card-text>
+                <v-layout row wrap>
+                  <v-flex xs8 sm8 md8>
+                    OEE
                   </v-flex>
-                  <v-flex xs6 sm6 md6 class="pr-5">
-                    <v-layout row wrap class="text-xs-center">
-                      <v-flex xs12 sm12 md12>
-                        <v-layout justify-center>
-                          <v-progress-circular
-                            size="40"
-                            width="5"
-                            value="80"
-                            color="warning"
-                          >
-                            <span class="caption white--text">80%</span>
-                          </v-progress-circular>
-                        </v-layout>
-                        <v-layout justify-center class="mt-1">
-                          <span class="caption font-weight-bold">
-                            Availability
-                          </span>
-                        </v-layout>
-                      </v-flex>
-                      <v-flex xs12 sm12 md12>
-                        <v-layout justify-center class="mt-3">
-                          <v-progress-circular
-                            size="40"
-                            width="5"
-                            value="80"
-                            color="error"
-                          >
-                            <span class="caption white--text">80%</span>
-                          </v-progress-circular>
-                        </v-layout>
-                        <v-layout justify-center class="mt-1">
-                          <span class="caption font-weight-bold">
-                            Performance
-                          </span>
-                        </v-layout>
-                      </v-flex>
-                      <v-flex xs12 sm12 md12>
-                        <v-layout justify-center class="mt-3">
-                          <v-progress-circular
-                            size="40"
-                            color="success"
-                            width="5"
-                            value="80"
-                          >
-                            <span class="caption white--text">80%</span>
-                          </v-progress-circular>
-                        </v-layout>
-                        <v-layout justify-center class="mt-1">
-                          <span class="caption font-weight-bold">Quality</span>
-                        </v-layout>
-                      </v-flex>
-                    </v-layout>
+                  <v-flex xs4 sm4 md4>
+                    100%
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Availability
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    100%
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Performance
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    100%
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Quality
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    100%
                   </v-flex>
                 </v-layout>
-              </v-flex>
-              <v-flex xs12 sm12 md4>
-                <span class="title font-weight-bold blue--text">
-                  Information
-                </span>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm12 md6 d-flex>
+            <v-card color="primary" dark>
+              <v-card-title class="title font-weight-bold underline mx-3 px-0">
+                Loss Time
+              </v-card-title>
+              <v-card-text>
                 <v-layout row wrap>
-                  <v-flex xs6 sm6 md5>
-                    Shift
-                  </v-flex>
-                  <v-flex xs6 sm6 md7>
-                    Shift 1
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap>
-                  <v-flex xs6 sm6 md5>
-                    PO Number
-                  </v-flex>
-                  <v-flex xs6 sm6 md7>
-                    123456
-                  </v-flex>
-                </v-layout>
-
-                <v-layout row wrap>
-                  <v-flex xs6 sm6 md5>
-                    SKU
-                  </v-flex>
-                  <v-flex xs6 sm6 md7>
-                    Keju wafer enak
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap>
-                  <v-flex xs6 sm6 md5>
-                    Target
-                  </v-flex>
-                  <v-flex xs6 sm6 md7>
-                    1500 Carton
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap>
-                  <v-flex xs6 sm6 md5>
-                    Standart CT
-                  </v-flex>
-                  <v-flex xs6 sm6 md7>
-                    120 Minutes
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap>
-                  <v-flex xs6 sm6 md5>
-                    Bottle Neck CT
-                  </v-flex>
-                  <v-flex xs6 sm6 md7>
-                    200 Minutes
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex id="production" xs12 sm12 md4>
-                <span class="title font-weight-bold blue--text">
-                  Production
-                </span>
-                <v-layout row wrap>
-                  <v-flex xs6 sm6 md5>
-                    Total Finish Good
-                  </v-flex>
-                  <v-flex xs6 sm6 md7>
-                    123 Carton
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap>
-                  <v-flex xs6 sm6 md5>
+                  <v-flex xs8 sm8 md8>
                     Total Defect
                   </v-flex>
-                  <v-flex xs6 sm6 md7>
-                    123456 Carton
+                  <v-flex xs4 sm4 md4>
+                    30
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Total Waktu Defect
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    01:20:15
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm12 md12>
+            <v-card color="primary" dark>
+              <v-card-title class="title font-weight-bold underline mx-3 px-0">
+                Production Time
+              </v-card-title>
+              <v-card-text>
+                <v-layout row wrap>
+                  <v-flex xs8 sm8 md4>
+                    Available Time
+                  </v-flex>
+                  <v-flex xs4 sm4 md2>
+                    480 minutes
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
-                  <v-flex xs6 sm6 md5>
-                    Pieces to Target
+                  <v-flex xs8 sm8 md4>
+                    Loading Time
                   </v-flex>
-                  <v-flex xs6 sm6 md7>
-                    123456 Carton
+                  <v-flex xs4 sm4 md2>
+                    480 minutes
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>
+                    Planned Downtime
+                  </v-flex>
+                  <v-flex xs4 sm4 md2>
+                    480 minutes
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>
+                    Operating Time
+                  </v-flex>
+                  <v-flex xs4 sm4 md2>
+                    480 minutes
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>
+                    Unplanned Downtime
+                  </v-flex>
+                  <v-flex xs4 sm4 md2>
+                    480 minutes
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>
+                    Net Operating Time
+                  </v-flex>
+                  <v-flex xs4 sm4 md2>
+                    480 minutes
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>
+                    Performance Losses
+                  </v-flex>
+                  <v-flex xs4 sm4 md2>
+                    480 minutes
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>
+                    Value Adding
+                  </v-flex>
+                  <v-flex xs4 sm4 md2>
+                    480 minutes
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>
+                    Quality Losses
+                  </v-flex>
+                  <v-flex xs4 sm4 md2>
+                    480 minutes
                   </v-flex>
                 </v-layout>
-              </v-flex>
-            </v-layout>
-          </v-card-text>
-        </v-card>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm12 md6 d-flex>
+            <v-card color="primary" dark>
+              <v-card-title class="title font-weight-bold underline mx-3 px-0">
+                Production Per PO
+              </v-card-title>
+              <v-card-text>
+                <v-layout row wrap>
+                  <v-flex xs8 sm8 md8>
+                    Production Target
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    1000
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Finish Good
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    980
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Pieces to Target
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    20
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm12 md6>
+            <v-card color="primary" dark>
+              <v-card-title class="title font-weight-bold underline mx-3 px-0">
+                Mean Time
+              </v-card-title>
+              <v-card-text>
+                <v-layout row wrap>
+                  <v-flex xs8 sm8 md8>
+                    Total Waktu Downtime
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    00:30:12
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Total Banyak Downtime
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    20
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Mean Time to Repair (MTTR)
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    00:05:20
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Mean Time to Failure (MTTF)
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    00:05:20
+                  </v-flex>
+                  <v-flex xs8 sm8 md8>
+                    Mean Time Between Failure (MTBF)
+                  </v-flex>
+                  <v-flex xs4 sm4 md4>
+                    00:05:20
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex xs12 sm12 md4>
+        <v-layout row wrap>
+          <v-flex xs12 sm12 md12>
+            <v-card color="primary" dark>
+              <v-card-title class="title font-weight-bold underline mx-3 px-0">
+                Six Big Loss
+              </v-card-title>
+              <v-card-text class="pb-0">
+                <v-layout class="subheading font-weight-bold">
+                  <v-flex xs8 sm8 md8>
+                    Planned Downtime
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>Time</v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex xs8 sm8 md8>Reason 1</v-flex>
+                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex xs8 sm8 md8>Reason 2</v-flex>
+                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
+                </v-layout>
+              </v-card-text>
+              <v-card-text class="pb-0">
+                <v-layout class="subheading font-weight-bold">
+                  <v-flex xs8 sm8 md8>
+                    Unplanned Downtime
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>Time</v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex xs8 sm8 md8>Reason 1</v-flex>
+                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex xs8 sm8 md8>Reason 2</v-flex>
+                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
+                </v-layout>
+              </v-card-text>
+              <v-card-text>
+                <v-layout class="subheading font-weight-bold">
+                  <v-flex xs8 sm8 md8>
+                    Performance Losses/ Minorstopage
+                  </v-flex>
+                  <v-flex xs8 sm8 md4>Time</v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex xs8 sm8 md8>Reason 1</v-flex>
+                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex xs8 sm8 md8>Reason 2</v-flex>
+                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm12 md12>
+            <v-card class="primary" dark>
+              <v-card-title class="title font-weight-bold underline mx-3 px-0">
+                Event
+              </v-card-title>
+              <v-card-text>
+                <v-layout row wrap class="font-weight-bold">
+                  <v-flex xs3 sm3 md3>Reason</v-flex>
+                  <v-flex xs3 sm3 md3>Machine</v-flex>
+                  <v-flex xs3 sm3 md3>Frequency</v-flex>
+                  <v-flex xs3 sm3 md3>Time</v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex xs12 sm12 md12 class="card-event">
+                    <vue-scroll :ops="scrollOptions">
+                      <v-layout v-for="item in 5" :key="item" row wrap>
+                        <v-flex xs3 sm3 md3>Cleaning Baking Plate</v-flex>
+                        <v-flex xs3 sm3 md3>Baking</v-flex>
+                        <v-flex xs3 sm3 md3>10</v-flex>
+                        <v-flex xs3 sm3 md3>01:10:12</v-flex>
+                      </v-layout>
+                    </vue-scroll>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
   </v-container>
@@ -222,8 +339,33 @@ import datetime from '~/mixins/datetime'
 export default {
   mixins: [shift, datetime, line],
   middleware: ['auth'],
+  head() {
+    return {
+      title: 'Production Detail - Machine Vision'
+    }
+  },
   data() {
     return {
+      scrollOptions: {
+        vuescroll: {
+          mode: 'native',
+          sizeStrategy: 'percent',
+          detectResize: true
+        },
+        bar: {
+          keepShow: true,
+          background: 'lightblue',
+          opacity: 1,
+          minSize: 0.1,
+          size: '5px'
+        },
+        scrollPanel: {
+          scrollingX: false,
+          scrollingY: true,
+          speed: 300,
+          verticalNativeBarPos: 'right'
+        }
+      },
       dateFilter: null,
       shiftFilterId: 1,
       lineFilterId: 1
@@ -241,5 +383,11 @@ export default {
 .v-text-field.v-text-field--enclosed .v-text-field__details {
   margin-bottom: 0px important;
   display: none !important;
+}
+.underline {
+  border-bottom: 2px solid white;
+}
+.card-event {
+  max-height: 23vh;
 }
 </style>
