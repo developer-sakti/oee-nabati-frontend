@@ -9,6 +9,7 @@
           <template slot="activator">
             <v-text-field
               solo
+              class="hidden-details"
               dark
               readonly
               :value="formatDate(dateFilter)"
@@ -21,6 +22,7 @@
       <v-flex xs6 sm6 md2>
         <v-select
           v-model="shiftFilterId"
+          class="hidden-details"
           label="Shift"
           solo
           dark
@@ -33,9 +35,9 @@
     </v-layout>
     <v-layout class="mt-3" row wrap>
       <v-flex v-for="n in 3" :key="n" xs12 sm12 md12>
-        <v-card color="purple darken-2" dark to="/production/123">
+        <v-card color="primary" dark to="/production/123">
           <v-card-title class="card-header mx-3">
-            <span class="headline blue--text font-weight-bold">Line 13</span>
+            <span class="headline white--text font-weight-bold">Line 13</span>
           </v-card-title>
           <v-card-text>
             <v-layout row wrap>
@@ -47,7 +49,7 @@
                         size="150"
                         width="13"
                         value="80"
-                        color="blue"
+                        color="blue lighten-3"
                       >
                         <span class="display-2 font-weight-bold white--text">
                           80%
@@ -114,7 +116,7 @@
                 </v-layout>
               </v-flex>
               <v-flex xs12 sm12 md4>
-                <span class="title font-weight-bold blue--text">
+                <span class="title font-weight-bold white--text">
                   Information
                 </span>
                 <v-layout row wrap>
@@ -168,7 +170,7 @@
                 </v-layout>
               </v-flex>
               <v-flex id="production" xs12 sm12 md4>
-                <span class="title font-weight-bold blue--text">
+                <span class="title font-weight-bold white--text">
                   Production
                 </span>
                 <v-layout row wrap>
@@ -209,24 +211,36 @@ import datetime from '~/mixins/datetime'
 export default {
   mixins: [shift, datetime],
   middleware: ['auth'],
+  head() {
+    return {
+      title: 'Production - Machine Vision'
+    }
+  },
   data() {
     return {
       dateFilter: null,
       shiftFilterId: 1
     }
   },
+  watch: {
+    dateFilter() {
+      this.getProduction()
+    },
+    shiftFilterId() {
+      this.getProduction()
+    }
+  },
   created() {
     this.dateFilter = this.currentDate
+  },
+  methods: {
+    getProduction() {}
   }
 }
 </script>
 <style>
 .v-input__slot {
   margin-bottom: 0px !important;
-}
-.v-text-field.v-text-field--enclosed .v-text-field__details {
-  margin-bottom: 0px important;
-  display: none !important;
 }
 #production {
   border-left: 2px solid white;

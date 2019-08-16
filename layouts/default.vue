@@ -56,9 +56,6 @@
           <v-list-tile class="ml-5 pl-2" to="/setting/sku">
             <v-list-tile-title>SKU</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile class="ml-5 pl-2" to="/setting/downtimeCategory">
-            <v-list-tile-title>Downtime Category</v-list-tile-title>
-          </v-list-tile>
           <v-list-tile class="ml-5 pl-2" to="/setting/downtimeReason">
             <v-list-tile-title>Downtime Reason</v-list-tile-title>
           </v-list-tile>
@@ -101,9 +98,6 @@
           <v-list>
             <v-list-tile to="/setting/sku">
               <v-list-tile-title>SKU</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile to="/setting/downtimeCategory">
-              <v-list-tile-title>Downtime Category</v-list-tile-title>
             </v-list-tile>
             <v-list-tile to="/setting/downtimeReason">
               <v-list-tile-title>Downtime Reason</v-list-tile-title>

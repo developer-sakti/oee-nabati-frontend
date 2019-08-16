@@ -33,6 +33,10 @@ export default {
     localStorage.setItem('user', JSON.stringify(payload.user))
     localStorage.setItem('auth', payload.accessToken)
   },
+  updateUser({ commit }, payload) {
+    commit(types.SET_USER_STATE, payload)
+    localStorage.setItem('user', JSON.stringify(payload))
+  },
   logout({ commit }) {
     commit(types.SET_AUTH_STATE, null)
     commit(types.SET_USER_STATE, null)

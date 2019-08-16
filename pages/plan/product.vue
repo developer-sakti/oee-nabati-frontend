@@ -215,22 +215,37 @@
           </v-card-title>
           <v-card-text class="py-0">
             <v-layout column>
+              <v-flex xs12 sm12 md12 class="mt-3">
+                <span class="title font-weight-regular">
+                  Active
+                </span>
+              </v-flex>
               <v-flex>
                 <po-list :title="polist.title1" :po="polist.active" />
               </v-flex>
-              <v-flex v-if="noActivePo">
+              <v-flex v-if="polist.active.length == 0">
                 <v-alert v-model="alert.status" :type="alert.type">
                   {{ alert.message }}
                 </v-alert>
               </v-flex>
             </v-layout>
-            <v-layout column>
-              <v-flex>
-                <po-list :title="polist.title2" :po="polist.waiting" />
+            <v-layout row wrap>
+              <v-flex xs12 sm12 md12>
+                <span class="title font-weight-regular">
+                  Waiting
+                </span>
               </v-flex>
-              <v-flex v-if="noListPo">
-                <v-alert v-model="alert.status" :type="alert.type">
-                  {{ alert.message }}
+              <v-flex class="wrapper" xs12 sm12 md12>
+                <vue-scroll>
+                  <po-list :title="polist.title2" :po="polist.waiting" />
+                </vue-scroll>
+              </v-flex>
+              <v-flex v-if="polist.waiting.length == 0" xs12 sm12 md12>
+                <v-alert
+                  v-model="alertWaiting.status"
+                  :type="alertWaiting.type"
+                >
+                  {{ alertWaiting.message }}
                 </v-alert>
               </v-flex>
             </v-layout>
@@ -242,8 +257,9 @@
 </template>
 <script>
 import defaultMixins from '~/mixins/default.mixins'
+import datetime from '~/mixins/datetime'
 export default {
-  mixins: [defaultMixins],
+  mixins: [defaultMixins, datetime],
   middleware: ['auth'],
   head() {
     return {
@@ -269,8 +285,6 @@ export default {
           !!this.shiftSelected || 'Shift must be selected first'
       },
       lineListSelectedId: null,
-      noActivePo: false,
-      noListPo: false,
       form: {
         po_number: null,
         standart_ct: null,
@@ -289,6 +303,11 @@ export default {
         active: [],
         title2: 'Waiting List',
         waiting: []
+      },
+      alertWaiting: {
+        status: false,
+        type: 'info',
+        message: null
       }
     }
   },
@@ -308,6 +327,7 @@ export default {
     },
     lineListSelectedId() {
       this.getPOActive()
+      this.getPOWaiting()
     }
   },
   created() {
@@ -377,23 +397,58 @@ export default {
           if (res.status == 200) {
             this.polist.active = []
             if (res.data === '') {
-              this.noActivePo = true
               this.alert = {
                 status: true,
-                message: 'There is no production order active',
+                message: 'There is no active production order',
                 type: 'info'
               }
             } else {
               this.polist.active.push(res.data)
             }
           }
+          this.getPOWaiting()
         })
+    },
+    getPOWaiting() {
+      this.waiting = []
+      if (this.polist.active.length > 0) {
+        this.$axios
+          .get(
+            process.env.SERVICE_URL +
+              '/rencana-produksi/waiting-list?datetime=' +
+              this.currentDate +
+              ' ' +
+              this.currentTime +
+              '&lineId=' +
+              this.lineListSelectedId
+          )
+          .then(res => {
+            if (res.status == 200) {
+              this.polist.waiting = []
+              if (res.data.length == 0) {
+                this.alertWaiting = {
+                  status: true,
+                  message: 'There is no waiting production order ',
+                  type: 'info'
+                }
+              } else {
+                this.polist.waiting = res.data
+              }
+            }
+          })
+      } else {
+        this.alertWaiting = {
+          status: true,
+          message: 'There is no waiting production order ',
+          type: 'info'
+        }
+      }
     }
   }
 }
 </script>
 
-<style>
+<style lang="css">
 .v-menu--inline {
   display: inline-block;
   width: 100% !important;
@@ -404,5 +459,8 @@ export default {
 }
 .v-input__control .v-input__slot {
   margin: 0px !important;
+}
+.wrapper{
+  max-height: 40vh;
 }
 </style>
