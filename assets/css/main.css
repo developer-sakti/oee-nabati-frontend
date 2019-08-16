@@ -34,6 +34,10 @@ input[type="number"] {
 .card-header{
   border-bottom: 2px solid white
 }
+.hidden-details > .v-input__control > .v-text-field__details {
+  margin-bottom: 0px important;
+  display: none !important;
+}
 
 .grey-background{
   background: #e5e5e5;

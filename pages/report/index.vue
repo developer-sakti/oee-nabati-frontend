@@ -69,7 +69,7 @@
             <v-layout row wrap justify-center class="mt-5">
               <v-flex xs12 sm6 md3>
                 <v-btn block large color="primary" class="text-none">
-                  Download as ODT
+                  Download as ODS
                 </v-btn>
               </v-flex>
               <v-flex xs12 sm6 md3>
@@ -88,7 +88,7 @@
 import shift from '~/mixins/shift.select'
 import line from '~/mixins/line.select'
 export default {
-  middleware: ['auth'],
+  // middleware: ['auth'],
   mixins: [shift, line],
   head() {
     return {
@@ -108,10 +108,6 @@ export default {
 <style>
 .v-input__slot {
   margin-bottom: 0px !important;
-}
-.v-text-field.v-text-field--enclosed .v-text-field__details {
-  margin-bottom: 0px important;
-  display: none !important;
 }
 .v-menu--inline {
   display: inline-block;

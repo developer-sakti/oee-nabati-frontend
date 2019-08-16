@@ -232,7 +232,7 @@ export default {
           this.$axios
             .patch(
               process.env.SERVICE_URL +
-                '/downtime-reason-machine/' +
+                '/downtime-reason-machine/update/' +
                 this.form.id,
               this.form
             )

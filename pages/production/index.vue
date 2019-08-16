@@ -9,6 +9,7 @@
           <template slot="activator">
             <v-text-field
               solo
+              class="hidden-details"
               dark
               readonly
               :value="formatDate(dateFilter)"
@@ -21,6 +22,7 @@
       <v-flex xs6 sm6 md2>
         <v-select
           v-model="shiftFilterId"
+          class="hidden-details"
           label="Shift"
           solo
           dark
@@ -209,24 +211,36 @@ import datetime from '~/mixins/datetime'
 export default {
   mixins: [shift, datetime],
   middleware: ['auth'],
+  head() {
+    return {
+      title: 'Production - Machine Vision'
+    }
+  },
   data() {
     return {
       dateFilter: null,
       shiftFilterId: 1
     }
   },
+  watch: {
+    dateFilter() {
+      this.getProduction()
+    },
+    shiftFilterId() {
+      this.getProduction()
+    }
+  },
   created() {
     this.dateFilter = this.currentDate
+  },
+  methods: {
+    getProduction() {}
   }
 }
 </script>
 <style>
 .v-input__slot {
   margin-bottom: 0px !important;
-}
-.v-text-field.v-text-field--enclosed .v-text-field__details {
-  margin-bottom: 0px important;
-  display: none !important;
 }
 #production {
   border-left: 2px solid white;

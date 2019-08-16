@@ -215,6 +215,11 @@
           </v-card-title>
           <v-card-text class="py-0">
             <v-layout column>
+              <v-flex xs12 sm12 md12 class="mt-3">
+                <span class="title font-weight-regular">
+                  Active
+                </span>
+              </v-flex>
               <v-flex>
                 <po-list :title="polist.title1" :po="polist.active" />
               </v-flex>
@@ -224,11 +229,18 @@
                 </v-alert>
               </v-flex>
             </v-layout>
-            <v-layout column>
-              <v-flex>
-                <po-list :title="polist.title2" :po="polist.waiting" />
+            <v-layout row wrap>
+              <v-flex xs12 sm12 md12>
+                <span class="title font-weight-regular">
+                  Waiting
+                </span>
               </v-flex>
-              <v-flex v-if="polist.waiting.length == 0">
+              <v-flex class="wrapper" xs12 sm12 md12>
+                <vue-scroll>
+                  <po-list :title="polist.title2" :po="polist.waiting" />
+                </vue-scroll>
+              </v-flex>
+              <v-flex v-if="polist.waiting.length == 0" xs12 sm12 md12>
                 <v-alert
                   v-model="alertWaiting.status"
                   :type="alertWaiting.type"
@@ -245,8 +257,9 @@
 </template>
 <script>
 import defaultMixins from '~/mixins/default.mixins'
+import datetime from '~/mixins/datetime'
 export default {
-  mixins: [defaultMixins],
+  mixins: [defaultMixins, datetime],
   middleware: ['auth'],
   head() {
     return {
@@ -314,6 +327,7 @@ export default {
     },
     lineListSelectedId() {
       this.getPOActive()
+      this.getPOWaiting()
     }
   },
   created() {
@@ -396,12 +410,15 @@ export default {
         })
     },
     getPOWaiting() {
+      this.waiting = []
       if (this.polist.active.length > 0) {
         this.$axios
           .get(
             process.env.SERVICE_URL +
-              '/rencana-produksi/waiting-list?poActiveId=' +
-              this.polist.active[0].id +
+              '/rencana-produksi/waiting-list?datetime=' +
+              this.currentDate +
+              ' ' +
+              this.currentTime +
               '&lineId=' +
               this.lineListSelectedId
           )
@@ -442,5 +459,8 @@ export default {
 }
 .v-input__control .v-input__slot {
   margin: 0px !important;
+}
+.wrapper{
+  max-height: 40vh;
 }
 </style>
