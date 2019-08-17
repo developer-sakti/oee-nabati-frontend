@@ -1,26 +1,6 @@
 export default {
   data() {
     return {
-      month: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'Mei',
-        'Jun',
-        'Jul',
-        'Agu',
-        'Sep',
-        'Okt',
-        'Nop',
-        'Des'
-      ],
-      days: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
-      dateTime: null,
-      clock: null,
-      currentDate: null,
-      currentTime: null,
-      timeInterval: '',
       snackbar: {
         status: false,
         text: '',
@@ -30,45 +10,24 @@ export default {
         status: false,
         message: '',
         type: 'info'
+      },
+      valid: true,
+      rules: {
+        required: value => !!value || 'Field is required'
       }
     }
-  },
-  mounted() {
-    setInterval(() => {
-      this.setDateTime()
-    }, 1000)
-    this.setDateTime()
   },
   computed: {
     user() {
       return this.$store.getters.user
+    },
+    token() {
+      return {
+        headers: { Authorization: 'Bearer ' + this.$store.getters.auth }
+      }
     }
   },
   methods: {
-    setDateTime() {
-      const date = new Date()
-      const month =
-        date.getMonth() + 1 > 9
-          ? date.getMonth() + 1
-          : '0' + (date.getMonth() + 1)
-      this.currentDate = date.getFullYear() + '-' + month + '-' + date.getDate()
-      const currentDate =
-        this.days[date.getDay()] +
-        ', ' +
-        date.getDate() +
-        '-' +
-        this.month[date.getMonth()] +
-        '-' +
-        date.getFullYear()
-      const hour = date.getHours() > 9 ? date.getHours() : '0' + date.getHours()
-      const minute =
-        date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes()
-      const second =
-        date.getSeconds() > 9 ? date.getSeconds() : '0' + date.getSeconds()
-      this.currentTime = hour + ':' + minute + ':' + second
-      this.dateTime = currentDate + ' ' + this.currentTime
-      this.clock = hour + ':' + minute
-    },
     showSnackbar(snackbar) {
       this.snackbar = snackbar
     },

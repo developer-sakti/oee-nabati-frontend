@@ -1,5 +1,14 @@
 <template>
   <v-container grid-list-md fluid class="no-select">
+    <v-snackbar
+      v-model="snackbar.status"
+      :color="snackbar.color"
+      :timeout="3000"
+      top
+      right
+    >
+      {{ snackbar.text }}
+    </v-snackbar>
     <v-layout row wrap>
       <v-flex xs12 sm12 md6>
         <v-layout row wrap>
@@ -51,11 +60,11 @@
                   <v-progress-circular
                     size="150"
                     width="25"
-                    value="80"
+                    :value="oee === null ? 0 : parseInt(oee.sector_oee)"
                     color="#7CB342"
                   >
                     <span class="display-2 white--text font-weight-bold">
-                      80%
+                      {{ oee === null ? 0 : parseInt(oee.sector_oee) }}%
                     </span>
                   </v-progress-circular>
                 </v-layout>
@@ -68,11 +77,11 @@
                   <v-progress-circular
                     size="150"
                     width="25"
-                    value="80"
+                    :value="oee === null ? 0 : parseInt(oee.sector_availablity)"
                     color="#FFCA28"
                   >
                     <span class="display-2 white--text font-weight-bold">
-                      80%
+                      {{ oee === null ? 0 : parseInt(oee.sector_availablity) }}%
                     </span>
                   </v-progress-circular>
                 </v-layout>
@@ -87,11 +96,17 @@
                   <v-progress-circular
                     size="150"
                     width="25"
-                    value="80"
+                    :value="
+                      oee === null ? 0 : parseInt(oee.sector_performance_rate)
+                    "
                     color="#FF8A65"
                   >
                     <span class="display-2 white--text font-weight-bold">
-                      80%
+                      {{
+                        oee === null
+                          ? 0
+                          : parseInt(oee.sector_performance_rate)
+                      }}%
                     </span>
                   </v-progress-circular>
                 </v-layout>
@@ -104,11 +119,11 @@
                   <v-progress-circular
                     size="150"
                     width="25"
-                    value="80"
+                    :value="oee === null ? 0 : parseInt(oee.sector_quality)"
                     color="#4DD0E1"
                   >
                     <span class="display-2 white--text font-weight-bold">
-                      80%
+                      {{ oee === null ? 0 : parseInt(oee.sector_quality) }}%
                     </span>
                   </v-progress-circular>
                 </v-layout>
@@ -125,35 +140,25 @@
 </template>
 <script>
 import ECharts from 'vue-echarts'
+import datetime from '~/mixins/datetime'
+import defaultMixins from '~/mixins/default.mixins'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/component/title'
 import 'echarts/lib/component/tooltip'
-import 'echarts/lib/chart/line'
-import 'echarts/lib/component/dataZoom'
 import 'echarts/lib/component/toolbox'
-import 'echarts/lib/component/visualMap'
-import 'echarts/lib/component/markLine'
 export default {
   middleware: ['auth'],
   components: {
     'v-chart': ECharts
   },
+  mixins: [datetime, defaultMixins],
   data() {
     return {
-      center: { lat: -3.350235, lng: 111.995865 },
-      mapTypeId: 'roadmap',
-      markers: [{ position: { lat: -6.9127778, lng: 107.6205556 } }],
+      oee: null,
       chartData: {
         tooltip: {},
         xAxis: {
-          data: [
-            '2019-08-12',
-            '2019-08-13',
-            '2019-08-14',
-            '2019-08-15',
-            '2019-08-16',
-            '2019-08-17'
-          ],
+          data: [],
           axisLabel: {
             textStyle: {
               color: '#37474F'
@@ -174,10 +179,61 @@ export default {
             itemStyle: {
               normal: { color: '#29B6F6' }
             },
-            data: [5, 20, 36, 10, 10, 20]
+            data: []
           }
         ]
       }
+    }
+  },
+  mounted() {
+    setInterval(() => {
+      this.getOEE()
+      if (this.oee === null) {
+        this.snackbar = {
+          status: true,
+          text: 'There is no Shift Active',
+          color: 'indigo'
+        }
+      }
+    }, 5000)
+  },
+  created() {
+    this.getOEE()
+    this.getProductivity()
+  },
+  methods: {
+    getOEE() {
+      this.$axios
+        .get(
+          process.env.SERVICE_URL +
+            '/oee/sector?date=2019-08-19' +
+            // this.currentDate +
+            '&time=' +
+            this.currentTime,
+          this.token
+        )
+        .then(res => {
+          if (res.data !== '') {
+            this.oee = res.data
+          } else {
+            this.oee = null
+          }
+        })
+    },
+    getProductivity() {
+      this.$axios
+        .get(
+          process.env.SERVICE_URL + '/rencana-produksi/productivity',
+          this.token
+        )
+        .then(res => {
+          for (let i = 0; i < res.data.length; i++) {
+            this.chartData.xAxis.data.push(res.data[i].date)
+            this.chartData.series[0].data.push(
+              res.data[i].total_target_produksi
+            )
+          }
+        })
     }
   }
 }

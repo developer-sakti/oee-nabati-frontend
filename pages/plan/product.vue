@@ -332,17 +332,21 @@ export default {
   },
   created() {
     this.form.supervisorId = this.user.id
-    this.$axios.get(process.env.SERVICE_URL + '/initial-shift').then(res => {
-      this.shift = res.data
-    })
-    this.$axios.get(process.env.SERVICE_URL + '/line').then(res => {
+    this.$axios
+      .get(process.env.SERVICE_URL + '/initial-shift', this.token)
+      .then(res => {
+        this.shift = res.data
+      })
+    this.$axios.get(process.env.SERVICE_URL + '/line', this.token).then(res => {
       this.line = res.data
       this.lineListSelectedId = res.data[0].id
       this.getPOActive()
     })
-    this.$axios.get(process.env.SERVICE_URL + '/initial-sku').then(res => {
-      this.sku = res.data
-    })
+    this.$axios
+      .get(process.env.SERVICE_URL + '/initial-sku', this.token)
+      .then(res => {
+        this.sku = res.data
+      })
   },
   mounted() {
     setInterval(() => {
@@ -359,19 +363,23 @@ export default {
       if (this.$refs.form.validate()) {
         this.snackbar = true
         this.$axios
-          .post(process.env.SERVICE_URL + '/rencana-produksi', this.form)
+          .post(
+            process.env.SERVICE_URL + '/rencana-produksi',
+            this.form,
+            this.token
+          )
           .then(res => {
             if (res.data.success) {
               this.resetForm()
               this.snackbar = {
                 status: true,
-                text: 'Order berhasil disimpan',
+                text: 'Production Order saved successfully',
                 color: 'success'
               }
             } else {
               this.snackbar = {
                 status: true,
-                text: 'Order gagal',
+                text: 'Production Order saved fail',
                 color: 'error'
               }
             }
@@ -391,7 +399,8 @@ export default {
             '&time=' +
             this.currentTime +
             '+&line_id=' +
-            this.lineListSelectedId
+            this.lineListSelectedId,
+          this.token
         )
         .then(res => {
           if (res.status == 200) {
@@ -420,7 +429,8 @@ export default {
               ' ' +
               this.currentTime +
               '&lineId=' +
-              this.lineListSelectedId
+              this.lineListSelectedId,
+            this.token
           )
           .then(res => {
             if (res.status == 200) {

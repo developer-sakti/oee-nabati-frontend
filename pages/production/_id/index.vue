@@ -57,25 +57,27 @@
                     OEE
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    100%
+                    {{ data !== null ? data.oee_shift.line_oee : '' }}%
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Availability
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    100%
+                    {{ data !== null ? data.oee_shift.availablity : '' }}%
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Performance
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    100%
+                    {{ data !== null ? data.oee_shift.performance_rate : '' }}%
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Quality
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    100%
+                    {{
+                      data !== null ? data.oee_shift.quality_product_rate : ''
+                    }}%
                   </v-flex>
                 </v-layout>
               </v-card-text>
@@ -92,13 +94,22 @@
                     Total Defect
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    30
+                    {{
+                      data !== null
+                        ? data.oee_shift.d_total_defect_qty_karton
+                        : ''
+                    }}
+                    Carton
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Total Waktu Defect
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    01:20:15
+                    {{
+                      data !== null
+                        ? formatTime(data.oee_shift.q_total_defect_losses)
+                        : ''
+                    }}
                   </v-flex>
                 </v-layout>
               </v-card-text>
@@ -123,49 +134,71 @@
                     Loading Time
                   </v-flex>
                   <v-flex xs4 sm4 md2>
-                    480 minutes
+                    {{ data !== null ? data.oee_shift.l_loading_hours : '' }}
+                    minutes
                   </v-flex>
                   <v-flex xs8 sm8 md4>
                     Planned Downtime
                   </v-flex>
                   <v-flex xs4 sm4 md2>
-                    480 minutes
+                    {{
+                      data !== null
+                        ? data.oee_shift.k_total_planned_dt_losses
+                        : ''
+                    }}
+                    minutes
                   </v-flex>
                   <v-flex xs8 sm8 md4>
                     Operating Time
                   </v-flex>
                   <v-flex xs4 sm4 md2>
-                    480 minutes
+                    {{ data !== null ? data.oee_shift.n_operating_hours : '' }}
+                    minutes
                   </v-flex>
                   <v-flex xs8 sm8 md4>
                     Unplanned Downtime
                   </v-flex>
                   <v-flex xs4 sm4 md2>
-                    480 minutes
+                    {{
+                      data !== null ? data.oee_shift.m_total_unplanned_dt : ''
+                    }}
+                    minutes
                   </v-flex>
                   <v-flex xs8 sm8 md4>
-                    Net Operating Time
+                    Net Operating Time (Running Time)
                   </v-flex>
                   <v-flex xs4 sm4 md2>
-                    480 minutes
+                    {{ data !== null ? data.oee_shift.p_running_time : '' }}
+                    minutes
                   </v-flex>
                   <v-flex xs8 sm8 md4>
                     Performance Losses
                   </v-flex>
                   <v-flex xs4 sm4 md2>
-                    480 minutes
+                    {{
+                      data !== null
+                        ? data.oee_shift.o_total_performance_losses
+                        : ''
+                    }}
+                    minutes
                   </v-flex>
                   <v-flex xs8 sm8 md4>
                     Value Adding
                   </v-flex>
                   <v-flex xs4 sm4 md2>
-                    480 minutes
+                    {{
+                      data !== null ? data.oee_shift.r_value_added_hours : ''
+                    }}
+                    minutes
                   </v-flex>
                   <v-flex xs8 sm8 md4>
                     Quality Losses
                   </v-flex>
                   <v-flex xs4 sm4 md2>
-                    480 minutes
+                    {{
+                      data !== null ? data.oee_shift.q_total_quality_losses : ''
+                    }}
+                    minutes
                   </v-flex>
                 </v-layout>
               </v-card-text>
@@ -182,19 +215,26 @@
                     Production Target
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    1000
+                    {{
+                      data !== null ? data.oee_shift.total_target_produksi : ''
+                    }}
+                    Carton
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Finish Good
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    980
+                    {{ data !== null ? data.oee_shift.b_finishgood_shift : '' }}
+                    Carton
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Pieces to Target
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    20
+                    {{
+                      data !== null ? data.oee_shift.total_pieces_to_target : ''
+                    }}
+                    Carton
                   </v-flex>
                 </v-layout>
               </v-card-text>
@@ -211,31 +251,43 @@
                     Total Waktu Downtime
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    00:30:12
+                    {{
+                      data !== null
+                        ? formatTime(data.oee_shift.w2_total_downtime)
+                        : ''
+                    }}
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Total Banyak Downtime
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    20
+                    {{
+                      data !== null ? data.oee_shift.w3_number_of_breakdown : ''
+                    }}
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Mean Time to Repair (MTTR)
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    00:05:20
+                    {{
+                      data !== null ? formatTime(data.oee_shift.mttr_y1) : ''
+                    }}
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Mean Time to Failure (MTTF)
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    00:05:20
+                    {{
+                      data !== null ? formatTime(data.oee_shift.mttf_z1) : ''
+                    }}
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Mean Time Between Failure (MTBF)
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    00:05:20
+                    {{
+                      data !== null ? formatTime(data.oee_shift.mtbf_x1) : ''
+                    }}
                   </v-flex>
                 </v-layout>
               </v-card-text>
@@ -257,13 +309,14 @@
                   </v-flex>
                   <v-flex xs8 sm8 md4>Time</v-flex>
                 </v-layout>
-                <v-layout>
-                  <v-flex xs8 sm8 md8>Reason 1</v-flex>
-                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
-                </v-layout>
-                <v-layout>
-                  <v-flex xs8 sm8 md8>Reason 2</v-flex>
-                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
+                <v-layout
+                  v-for="item in data === null
+                    ? []
+                    : data.six_big_loss.planned_downtime"
+                  :key="item.id + item.duration"
+                >
+                  <v-flex xs8 sm8 md8>{{ item.downtime_reason.reason }}</v-flex>
+                  <v-flex xs8 sm8 md4>{{ formatTime(item.duration) }}</v-flex>
                 </v-layout>
               </v-card-text>
               <v-card-text class="pb-0">
@@ -273,13 +326,14 @@
                   </v-flex>
                   <v-flex xs8 sm8 md4>Time</v-flex>
                 </v-layout>
-                <v-layout>
-                  <v-flex xs8 sm8 md8>Reason 1</v-flex>
-                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
-                </v-layout>
-                <v-layout>
-                  <v-flex xs8 sm8 md8>Reason 2</v-flex>
-                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
+                <v-layout
+                  v-for="item in data === null
+                    ? []
+                    : data.six_big_loss.unplanned_downtime"
+                  :key="item.id + item.duration"
+                >
+                  <v-flex xs8 sm8 md8>{{ item.downtime_reason.reason }}</v-flex>
+                  <v-flex xs8 sm8 md4>{{ formatTime(item.duration) }}</v-flex>
                 </v-layout>
               </v-card-text>
               <v-card-text>
@@ -289,13 +343,14 @@
                   </v-flex>
                   <v-flex xs8 sm8 md4>Time</v-flex>
                 </v-layout>
-                <v-layout>
-                  <v-flex xs8 sm8 md8>Reason 1</v-flex>
-                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
-                </v-layout>
-                <v-layout>
-                  <v-flex xs8 sm8 md8>Reason 2</v-flex>
-                  <v-flex xs8 sm8 md4>10:05:12</v-flex>
+                <v-layout
+                  v-for="item in data === null
+                    ? []
+                    : data.six_big_loss.performance_loss"
+                  :key="item.id + item.duration"
+                >
+                  <v-flex xs8 sm8 md8>{{ item.downtime_reason.reason }}</v-flex>
+                  <v-flex xs8 sm8 md4>{{ formatTime(item.duration) }}</v-flex>
                 </v-layout>
               </v-card-text>
             </v-card>
@@ -315,11 +370,18 @@
                 <v-layout>
                   <v-flex xs12 sm12 md12 class="card-event">
                     <vue-scroll :ops="scrollOptions">
-                      <v-layout v-for="item in 5" :key="item" row wrap>
-                        <v-flex xs3 sm3 md3>Cleaning Baking Plate</v-flex>
-                        <v-flex xs3 sm3 md3>Baking</v-flex>
-                        <v-flex xs3 sm3 md3>10</v-flex>
-                        <v-flex xs3 sm3 md3>01:10:12</v-flex>
+                      <v-layout
+                        v-for="item in data === null ? [] : data.event"
+                        :key="item.reason + item.duration"
+                        row
+                        wrap
+                      >
+                        <v-flex xs3 sm3 md3>{{ item.reason }}</v-flex>
+                        <v-flex xs3 sm3 md3>{{ item.machine }}</v-flex>
+                        <v-flex xs3 sm3 md3>{{ item.frequency }}</v-flex>
+                        <v-flex xs3 sm3 md3>{{
+                          formatTime(item.duration)
+                        }}</v-flex>
                       </v-layout>
                     </vue-scroll>
                   </v-flex>
@@ -336,8 +398,9 @@
 import shift from '~/mixins/shift.select'
 import line from '~/mixins/line.select'
 import datetime from '~/mixins/datetime'
+import defaultMixins from '~/mixins/default.mixins'
 export default {
-  mixins: [shift, datetime, line],
+  mixins: [shift, datetime, line, defaultMixins],
   middleware: ['auth'],
   head() {
     return {
@@ -368,11 +431,34 @@ export default {
       },
       dateFilter: null,
       shiftFilterId: 1,
-      lineFilterId: 1
+      lineFilterId: null,
+      data: null
     }
   },
   created() {
     this.dateFilter = this.currentDate
+    this.lineFilterId = parseInt(this.$route.params.id)
+    this.getDetail()
+  },
+  methods: {
+    getDetail() {
+      this.$axios
+        .get(
+          process.env.SERVICE_URL +
+            '/oee/shift/bydate/' +
+            this.lineFilterId +
+            '?shiftId=' +
+            this.shiftFilterId +
+            '&date=' +
+            this.dateFilter,
+          this.token
+        )
+        .then(res => {
+          if (res.status == 200) {
+            this.data = res.data
+          }
+        })
+    }
   }
 }
 </script>

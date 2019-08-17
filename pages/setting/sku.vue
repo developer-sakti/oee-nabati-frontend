@@ -163,16 +163,22 @@ export default {
   methods: {
     getSKUList() {
       this.skus = []
-      this.$axios.get(process.env.SERVICE_URL + '/initial-sku').then(res => {
-        this.skus = res.data
-      })
+      this.$axios
+        .get(process.env.SERVICE_URL + '/initial-sku', this.token)
+        .then(res => {
+          this.skus = res.data
+        })
     },
     submit() {
       if (this.$refs.formSKU.validate()) {
         this.snackbar = true
         if (!this.update) {
           this.$axios
-            .post(process.env.SERVICE_URL + '/initial-sku', this.form)
+            .post(
+              process.env.SERVICE_URL + '/initial-sku',
+              this.form,
+              this.token
+            )
 
             .then(res => {
               if (res.status == 201) {
@@ -195,7 +201,8 @@ export default {
           this.$axios
             .put(
               process.env.SERVICE_URL + '/initial-sku/' + this.form.id,
-              this.form
+              this.form,
+              this.token
             )
             .then(res => {
               if (res.status == 200) {
@@ -231,7 +238,10 @@ export default {
     },
     deleteItem() {
       this.$axios
-        .delete(process.env.SERVICE_URL + '/initial-sku/' + this.deletedItem.id)
+        .delete(
+          process.env.SERVICE_URL + '/initial-sku/' + this.deletedItem.id,
+          this.token
+        )
         .then(res => {
           if (res.status == 200) {
             this.getSKUList()
