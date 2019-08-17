@@ -151,7 +151,8 @@ export default {
           this.$axios
             .put(
               process.env.SERVICE + '/user/' + this.user.id,
-              this.formProfile
+              this.formProfile,
+              this.token
             )
             .then(res => {
               if (res.status == 200) {
@@ -179,11 +180,15 @@ export default {
         if (this.$refs.formUpdatePassword.validate()) {
           this.snackbar = true
           this.$axios
-            .patch(process.env.SERVICE_URL + '/auth/password', {
-              username: this.user.username,
-              oldPassword: this.formPassword.oldPassword,
-              newPassword: this.formPassword.newPassword
-            })
+            .patch(
+              process.env.SERVICE_URL + '/auth/password',
+              {
+                username: this.user.username,
+                oldPassword: this.formPassword.oldPassword,
+                newPassword: this.formPassword.newPassword
+              },
+              this.token
+            )
             .then(res => {
               if (res.status == 200) {
                 this.snackbar = {

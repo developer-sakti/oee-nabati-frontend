@@ -83,7 +83,7 @@
                     flat
                     :items="reasons"
                     item-text="reason"
-                    item-value="id"
+                    item-value="downtimeReasonId"
                   />
                 </v-flex>
                 <v-flex xs12 sm12 md6>
@@ -210,7 +210,6 @@
                   </v-layout>
                 </vue-scroll>
               </v-flex>
-
               <v-flex v-if="downtimes.length == 0" xs12 sm12 md12>
                 <v-alert v-model="alert.status" :type="alert.type">
                   {{ alert.message }}
@@ -286,9 +285,11 @@ export default {
     }
   },
   created() {
-    this.$axios.get(process.env.SERVICE_URL + '/machine').then(res => {
-      this.machines = res.data
-    })
+    this.$axios
+      .get(process.env.SERVICE_URL + '/machine', this.token)
+      .then(res => {
+        this.machines = res.data
+      })
     this.lineFilterId = 1
     this.getDowntimeList()
   },
@@ -300,7 +301,8 @@ export default {
           process.env.SERVICE_URL +
             '/downtime-reason-machine/category?machine_id=' +
             this.machineSelectedId +
-            '&categori_id=1'
+            '&categori_id=1',
+          this.token
         )
         .then(res => {
           this.reasons = res.data
@@ -312,7 +314,8 @@ export default {
         .get(
           process.env.SERVICE_URL +
             '/downtime/category/1?line_id=' +
-            this.lineFilterId
+            this.lineFilterId,
+          this.token
         )
         .then(res => {
           if (res.data.length == 0) {
@@ -329,16 +332,20 @@ export default {
       if (this.$refs.formPlanDowntime.validate()) {
         this.snackbar = true
         this.$axios
-          .post(process.env.SERVICE_URL + '/downtime', {
-            duration: this.convertMinutes(this.downtimeDuration),
-            date: this.downtimeDate,
-            shiftId: this.downtimeShiftId,
-            lineId: this.lineListSelectedId,
-            rencanaProduksiId: null,
-            machineId: this.machineSelectedId,
-            downtimeCategoryId: 1,
-            downtimeReasonId: this.downtimeReasonId
-          })
+          .post(
+            process.env.SERVICE_URL + '/downtime',
+            {
+              duration: this.convertMinutes(this.downtimeDuration),
+              date: this.downtimeDate,
+              shiftId: this.downtimeShiftId,
+              lineId: this.lineListSelectedId,
+              rencanaProduksiId: null,
+              machineId: this.machineSelectedId,
+              downtimeCategoryId: 1,
+              downtimeReasonId: this.downtimeReasonId
+            },
+            this.token
+          )
           .then(res => {
             if (res.status == 201) {
               this.snackbar = {
