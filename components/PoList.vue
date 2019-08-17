@@ -1,12 +1,9 @@
 <template>
   <v-card flat>
-    <v-card-title class="title font-weight-regular">
-      {{ title }}
-    </v-card-title>
     <v-card-text
       v-for="item in po"
       :key="item.po_number"
-      class="cyan lighten-2 px-3"
+      class="cyan lighten-2 px-3 mb-3"
     >
       <v-layout>
         <v-flex xs2 sm2 md3>
@@ -42,11 +39,11 @@
         <v-flex xs2 sm2 md3>
           Start
         </v-flex>
-        <v-flex xs3 sm3 md3> : {{ item.start_sku }} </v-flex>
+        <v-flex xs3 sm3 md3> : {{ item.start_po }} </v-flex>
         <v-flex xs2 sm2 md3>
           End
         </v-flex>
-        <v-flex xs3 sm3 md3> : {{ item.end_sku }} </v-flex>
+        <v-flex xs3 sm3 md3> : {{ item.end_po }} </v-flex>
       </v-layout>
       <v-layout>
         <v-flex xs2 sm2 md3>
@@ -63,7 +60,8 @@
           Inputed by
         </v-flex>
         <v-flex xs3 sm3 md3>
-          : {{ item.supervisor.firstname + ' ' + item.supervisor.lastname }}
+          :
+          {{ item.supervisor.firstname + ' ' + item.supervisor.lastname }}
         </v-flex>
       </v-layout>
     </v-card-text>
@@ -74,10 +72,6 @@ import datetime from '~/mixins/datetime'
 export default {
   mixins: [datetime],
   props: {
-    title: {
-      type: String,
-      required: true
-    },
     po: {
       type: Array,
       required: true
