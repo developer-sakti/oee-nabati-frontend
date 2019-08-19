@@ -33,11 +33,24 @@
         />
       </v-flex>
     </v-layout>
+    <v-layout>
+      <v-flex v-if="oee.length == 0" xs12 sm6 md3>
+        <v-alert v-model="alert.status" :type="alert.type">
+          {{ alert.message }}
+        </v-alert>
+      </v-flex>
+    </v-layout>
     <v-layout class="mt-3" row wrap>
-      <v-flex v-for="n in 3" :key="n" xs12 sm12 md12>
-        <v-card color="primary" dark to="/production/123">
+      <v-flex v-for="item in oee" :key="item.id" xs12 sm12 md12>
+        <v-card
+          color="primary"
+          dark
+          :to="{ path: '/production/' + item.lineId, param: { shift: 1 } }"
+        >
           <v-card-title class="card-header mx-3">
-            <span class="headline white--text font-weight-bold">Line 13</span>
+            <span class="headline white--text font-weight-bold">{{
+              item.line.name
+            }}</span>
           </v-card-title>
           <v-card-text>
             <v-layout row wrap>
@@ -48,11 +61,11 @@
                       <v-progress-circular
                         size="150"
                         width="13"
-                        value="80"
+                        :value="item.line_oee"
                         color="blue lighten-3"
                       >
                         <span class="display-2 font-weight-bold white--text">
-                          80%
+                          {{ parseInt(item.line_oee) }}%
                         </span>
                       </v-progress-circular>
                     </v-layout>
@@ -67,10 +80,12 @@
                           <v-progress-circular
                             size="40"
                             width="5"
-                            value="80"
+                            :value="item.availablity"
                             color="warning"
                           >
-                            <span class="caption white--text">80%</span>
+                            <span class="caption white--text">
+                              {{ parseInt(item.availablity) }}%
+                            </span>
                           </v-progress-circular>
                         </v-layout>
                         <v-layout justify-center class="mt-1">
@@ -84,10 +99,12 @@
                           <v-progress-circular
                             size="40"
                             width="5"
-                            value="80"
+                            :value="item.performance_rate"
                             color="error"
                           >
-                            <span class="caption white--text">80%</span>
+                            <span class="caption white--text">
+                              {{ parseInt(item.performance_rate) }}%
+                            </span>
                           </v-progress-circular>
                         </v-layout>
                         <v-layout justify-center class="mt-1">
@@ -102,9 +119,11 @@
                             size="40"
                             color="success"
                             width="5"
-                            value="80"
+                            :value="item.quality_product_rate"
                           >
-                            <span class="caption white--text">80%</span>
+                            <span class="caption white--text">
+                              {{ parseInt(item.quality_product_rate) }}%
+                            </span>
                           </v-progress-circular>
                         </v-layout>
                         <v-layout justify-center class="mt-1">
@@ -124,7 +143,7 @@
                     Shift
                   </v-flex>
                   <v-flex xs6 sm6 md7>
-                    Shift 1
+                    {{ item.shift.shift_name }}
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -132,7 +151,7 @@
                     PO Number
                   </v-flex>
                   <v-flex xs6 sm6 md7>
-                    123456
+                    {{ item.po.length > 0 ? item.po[0].po_number : '-' }}
                   </v-flex>
                 </v-layout>
 
@@ -141,7 +160,7 @@
                     SKU
                   </v-flex>
                   <v-flex xs6 sm6 md7>
-                    Keju wafer enak
+                    {{ item.po.length > 0 ? item.po[0].sku.name : '-' }}
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -149,7 +168,7 @@
                     Target
                   </v-flex>
                   <v-flex xs6 sm6 md7>
-                    1500 Carton
+                    {{ item.total_target_produksi }} Carton
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -157,7 +176,7 @@
                     Standart CT
                   </v-flex>
                   <v-flex xs6 sm6 md7>
-                    120 Minutes
+                    {{ item.total_standart_ct }} Minutes
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -165,7 +184,7 @@
                     Bottle Neck CT
                   </v-flex>
                   <v-flex xs6 sm6 md7>
-                    200 Minutes
+                    {{ item.total_bottleneck_ct }} Minutes
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -178,7 +197,7 @@
                     Total Finish Good
                   </v-flex>
                   <v-flex xs6 sm6 md7>
-                    123 Carton
+                    {{ item.b_finishgood_shift }} Carton
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -186,7 +205,7 @@
                     Total Defect
                   </v-flex>
                   <v-flex xs6 sm6 md7>
-                    123456 Carton
+                    {{ item.d_total_defect_qty_karton }} Carton
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -194,7 +213,8 @@
                     Pieces to Target
                   </v-flex>
                   <v-flex xs6 sm6 md7>
-                    123456 Carton
+                    {{ item.total_pieces_to_target }}
+                    Carton
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -208,8 +228,9 @@
 <script>
 import shift from '~/mixins/shift.select'
 import datetime from '~/mixins/datetime'
+import defaultMixins from '~/mixins/default.mixins'
 export default {
-  mixins: [shift, datetime],
+  mixins: [shift, datetime, defaultMixins],
   middleware: ['auth'],
   head() {
     return {
@@ -219,7 +240,9 @@ export default {
   data() {
     return {
       dateFilter: null,
-      shiftFilterId: 1
+      shiftFilterId: 1,
+      oee: [],
+      po: []
     }
   },
   watch: {
@@ -234,7 +257,31 @@ export default {
     this.dateFilter = this.currentDate
   },
   methods: {
-    getProduction() {}
+    getProduction() {
+      this.oee = []
+      this.$axios
+        .get(
+          process.env.SERVICE_URL +
+            '/oee/shift/bydate?shiftId=' +
+            this.shiftFilterId +
+            '&date=' +
+            this.dateFilter,
+          this.token
+        )
+        .then(res => {
+          if (res.status == 200) {
+            this.oee = res.data.oee_shift
+            this.po = res.data.po
+          }
+        })
+      if (this.oee.length == 0) {
+        this.alert = {
+          status: true,
+          type: 'info',
+          message: 'There is no data'
+        }
+      }
+    }
   }
 }
 </script>

@@ -192,13 +192,15 @@ export default {
   },
   created() {
     this.$axios
-      .get(process.env.SERVICE_URL + '/downtime-category')
+      .get(process.env.SERVICE_URL + '/downtime-category', this.token)
       .then(res => {
         this.categories = res.data
       })
-    this.$axios.get(process.env.SERVICE_URL + '/machine').then(res => {
-      this.machines = res.data
-    })
+    this.$axios
+      .get(process.env.SERVICE_URL + '/machine', this.token)
+      .then(res => {
+        this.machines = res.data
+      })
     this.getReasonList()
   },
   methods: {
@@ -209,7 +211,8 @@ export default {
           this.$axios
             .post(
               process.env.SERVICE_URL + '/downtime-reason-machine/create',
-              this.form
+              this.form,
+              this.token
             )
             .then(res => {
               if (res.status == 201) {
@@ -234,7 +237,8 @@ export default {
               process.env.SERVICE_URL +
                 '/downtime-reason-machine/update/' +
                 this.form.id,
-              this.form
+              this.form,
+              this.token
             )
             .then(res => {
               if (res.status == 200) {
@@ -259,7 +263,10 @@ export default {
     getReasonList() {
       this.reasons = []
       this.$axios
-        .get(process.env.SERVICE_URL + '/downtime-reason-machine/all')
+        .get(
+          process.env.SERVICE_URL + '/downtime-reason-machine/all',
+          this.token
+        )
         .then(res => {
           this.reasons = res.data
         })
@@ -281,7 +288,8 @@ export default {
         .delete(
           process.env.SERVICE_URL +
             '/downtime-reason-machine/' +
-            this.deletedItem.id
+            this.deletedItem.id,
+          this.token
         )
         .then(res => {
           console.log(res)
