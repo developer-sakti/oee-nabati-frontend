@@ -19,9 +19,9 @@ RUN npm config set python /usr/bin/python
 RUN npm i -g npm
 
 COPY package.json .
-
 RUN npm i --silent
 
+COPY . .
 RUN npm run build
 
 EXPOSE ${FRONTEND_PORT}
