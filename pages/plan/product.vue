@@ -377,6 +377,7 @@ export default {
                 color: 'success'
               }
             } else {
+              console.log(res)
               this.snackbar = {
                 status: true,
                 text: 'Production Order saved fail',
