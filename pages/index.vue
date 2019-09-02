@@ -51,7 +51,7 @@
       <v-flex xs12 sm12 md6>
         <v-card color="blue darken-1" dark height="80vh">
           <v-card-title class="pb-0">
-            <span class="title">Calculation</span>
+            <span class="title">OEE Sector</span>
           </v-card-title>
           <v-card-text>
             <v-layout row wrap align-center>

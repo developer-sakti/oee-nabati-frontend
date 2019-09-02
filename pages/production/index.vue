@@ -34,10 +34,179 @@
       </v-flex>
     </v-layout>
     <v-layout>
-      <v-flex v-if="oee.length == 0" xs12 sm6 md3>
-        <v-alert v-model="alert.status" :type="alert.type">
-          {{ alert.message }}
-        </v-alert>
+      <v-flex v-if="oee.length == 0" xs12 sm12 md12>
+        <v-card color="primary" dark>
+          <v-card-title class="card-header mx-3">
+            <span class="headline white--text font-weight-bold">Line -</span>
+          </v-card-title>
+          <v-card-text>
+            <v-layout row wrap>
+              <v-flex xs12 sm12 md4>
+                <v-layout row wrap align-center>
+                  <v-flex xs6 sm6 md6>
+                    <v-layout justify-center>
+                      <v-progress-circular
+                        size="150"
+                        width="13"
+                        :value="0"
+                        color="blue lighten-3"
+                      >
+                        <span class="display-2 font-weight-bold white--text">
+                          0%
+                        </span>
+                      </v-progress-circular>
+                    </v-layout>
+                    <v-layout justify-center class="mt-1">
+                      <span class="subheading font-weight-bold">OEE</span>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex xs6 sm6 md6 class="pr-5">
+                    <v-layout row wrap class="text-xs-center">
+                      <v-flex xs12 sm12 md12>
+                        <v-layout justify-center>
+                          <v-progress-circular
+                            size="40"
+                            width="5"
+                            :value="0"
+                            color="warning"
+                          >
+                            <span class="caption white--text">
+                              0%
+                            </span>
+                          </v-progress-circular>
+                        </v-layout>
+                        <v-layout justify-center class="mt-1">
+                          <span class="caption font-weight-bold">
+                            Availability
+                          </span>
+                        </v-layout>
+                      </v-flex>
+                      <v-flex xs12 sm12 md12>
+                        <v-layout justify-center class="mt-3">
+                          <v-progress-circular
+                            size="40"
+                            width="5"
+                            :value="0"
+                            color="error"
+                          >
+                            <span class="caption white--text">
+                              0%
+                            </span>
+                          </v-progress-circular>
+                        </v-layout>
+                        <v-layout justify-center class="mt-1">
+                          <span class="caption font-weight-bold">
+                            Performance
+                          </span>
+                        </v-layout>
+                      </v-flex>
+                      <v-flex xs12 sm12 md12>
+                        <v-layout justify-center class="mt-3">
+                          <v-progress-circular
+                            size="40"
+                            color="success"
+                            width="5"
+                            :value="0"
+                          >
+                            <span class="caption white--text">
+                              0%
+                            </span>
+                          </v-progress-circular>
+                        </v-layout>
+                        <v-layout justify-center class="mt-1">
+                          <span class="caption font-weight-bold">Quality</span>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+              <v-flex xs12 sm12 md4>
+                <span class="title font-weight-bold white--text">
+                  Information
+                </span>
+                <v-layout row wrap>
+                  <v-flex xs6 sm6 md5>
+                    Shift
+                  </v-flex>
+                  <v-flex xs6 sm6 md7>
+                    Shift -
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6 sm6 md5>
+                    PO Number
+                  </v-flex>
+                  <v-flex xs6 sm6 md7>
+                    #
+                  </v-flex>
+                </v-layout>
+
+                <v-layout row wrap>
+                  <v-flex xs6 sm6 md5>
+                    SKU
+                  </v-flex>
+                  <v-flex xs6 sm6 md7>
+                    #
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6 sm6 md5>
+                    Target
+                  </v-flex>
+                  <v-flex xs6 sm6 md7>
+                    0 Carton
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6 sm6 md5>
+                    Standart CT
+                  </v-flex>
+                  <v-flex xs6 sm6 md7>
+                    0 Minutes
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6 sm6 md5>
+                    Bottle Neck CT
+                  </v-flex>
+                  <v-flex xs6 sm6 md7>
+                    0 Minutes
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+              <v-flex id="production" xs12 sm12 md4>
+                <span class="title font-weight-bold white--text">
+                  Production
+                </span>
+                <v-layout row wrap>
+                  <v-flex xs6 sm6 md5>
+                    Total Finish Good
+                  </v-flex>
+                  <v-flex xs6 sm6 md7>
+                    0 Carton
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6 sm6 md5>
+                    Total Defect
+                  </v-flex>
+                  <v-flex xs6 sm6 md7>
+                    0 Carton
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6 sm6 md5>
+                    Pieces to Target
+                  </v-flex>
+                  <v-flex xs6 sm6 md7>
+                    0 Carton
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+        </v-card>
       </v-flex>
     </v-layout>
     <v-layout class="mt-3" row wrap>

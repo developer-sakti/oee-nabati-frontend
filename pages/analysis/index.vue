@@ -152,7 +152,9 @@
                       data === null
                         ? ''
                         : formatTime(
-                            data.oee.statistic[0].total_production_time
+                            data.oee.statistic[0].total_production_time !== null
+                              ? data.oee.statistic[0].total_production_time
+                              : 0
                           )
                     }}
                   </v-flex>
@@ -163,7 +165,11 @@
                     {{
                       data === null
                         ? ''
-                        : formatTime(data.oee.statistic[0].total_loss_in_time)
+                        : formatTime(
+                            data.oee.statistic[0].total_loss_in_time !== null
+                              ? data.oee.statistic[0].total_loss_in_time
+                              : 0
+                          )
                     }}
                   </v-flex>
                 </v-layout>
