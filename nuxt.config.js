@@ -88,6 +88,6 @@ export default {
     }
   },
   env: {
-    SERVICE_URL: 'http://192.168.1.6:8001/api/v1'
+    SERVICE_URL: process.env.API_URL
   }
 }
