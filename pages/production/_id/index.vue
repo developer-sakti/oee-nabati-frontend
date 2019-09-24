@@ -57,26 +57,48 @@
                     OEE
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    {{ data !== null ? data.oee_shift.line_oee : '' }}%
+                    {{
+                      data !== null
+                        ? data.oee_shift !== undefined
+                          ? data.oee_shift.line_oee
+                          : ''
+                        : ''
+                    }}%
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Availability
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    {{ data !== null ? data.oee_shift.availablity : '' }}%
+                    {{
+                      data !== null
+                        ? data.oee_shift !== undefined
+                          ? data.oee_shift.availablity
+                          : ''
+                        : ''
+                    }}%
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Performance
                   </v-flex>
                   <v-flex xs4 sm4 md4>
-                    {{ data !== null ? data.oee_shift.performance_rate : '' }}%
+                    {{
+                      data !== null
+                        ? data.oee_shift !== undefined
+                          ? data.oee_shift.performance_rate
+                          : ''
+                        : ''
+                    }}%
                   </v-flex>
                   <v-flex xs8 sm8 md8>
                     Quality
                   </v-flex>
                   <v-flex xs4 sm4 md4>
                     {{
-                      data !== null ? data.oee_shift.quality_product_rate : ''
+                      data !== null
+                        ? data.oee_shift !== undefined
+                          ? data.oee_shift.quality_product_rate
+                          : ''
+                        : ''
                     }}%
                   </v-flex>
                 </v-layout>
@@ -96,7 +118,9 @@
                   <v-flex xs4 sm4 md4>
                     {{
                       data !== null
-                        ? data.oee_shift.d_total_defect_qty_karton
+                        ? data.oee_shift !== undefined
+                          ? data.oee_shift.d_total_defect_qty_karton
+                          : ''
                         : ''
                     }}
                     Carton
@@ -435,6 +459,17 @@ export default {
       data: null
     }
   },
+  watch: {
+    dateFilter() {
+      this.getDetail()
+    },
+    shiftFilterId() {
+      this.getDetail()
+    },
+    lineFilterId() {
+      this.getDetail()
+    }
+  },
   created() {
     this.dateFilter = this.currentDate
     this.lineFilterId = parseInt(this.$route.params.id)
@@ -449,11 +484,12 @@ export default {
             this.lineFilterId +
             '?shiftId=' +
             this.shiftFilterId +
-            '&date=' +
-            this.dateFilter,
+            '&date=',
+          this.dateFilter,
           this.token
         )
         .then(res => {
+          console.log(res)
           if (res.status == 200) {
             this.data = res.data
           }

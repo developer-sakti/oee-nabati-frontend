@@ -88,7 +88,6 @@ export default {
     }
   },
   env: {
-    SERVICE_URL:
-      'http://ec2-18-136-95-199.ap-southeast-1.compute.amazonaws.com:8081/api/v1'
+    SERVICE_URL: 'http://192.168.1.6:8001/api/v1'
   }
 }

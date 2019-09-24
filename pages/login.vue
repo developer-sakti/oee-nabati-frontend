@@ -111,8 +111,10 @@ export default {
           .post(process.env.SERVICE_URL + '/auth/login', this.form)
           .then(res => {
             if (res.status == 201) {
-              this.$store.dispatch('setAuth', res.data)
-              this.$router.push('/')
+              if (res.data.accessToken !== undefined) {
+                this.$store.dispatch('setAuth', res.data)
+                this.$router.push('/')
+              }
             } else {
               this.alert = {
                 status: true,

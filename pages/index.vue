@@ -203,11 +203,12 @@ export default {
   },
   methods: {
     getOEE() {
+      const date = this.isHourUnderSix ? this.yesterdayDate : this.currentDate
       this.$axios
         .get(
           process.env.SERVICE_URL +
-            '/oee/sector?date=2019-08-19' +
-            // this.currentDate +
+            '/oee/sector?date=' +
+            date +
             '&time=' +
             this.currentTime,
           this.token
@@ -221,12 +222,15 @@ export default {
         })
     },
     getProductivity() {
+      this.chartData.xAxis.data = []
+      this.chartData.series[0].data = []
       this.$axios
         .get(
           process.env.SERVICE_URL + '/rencana-produksi/productivity',
           this.token
         )
         .then(res => {
+          console.log(res)
           for (let i = 0; i < res.data.length; i++) {
             this.chartData.xAxis.data.push(res.data[i].date)
             this.chartData.series[0].data.push(

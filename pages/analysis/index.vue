@@ -347,6 +347,7 @@ export default {
       },
       oeeGraph: false,
       periods: [
+        { value: 'shiftly', name: 'Shiftly' },
         { value: 'daily', name: 'Daily' },
         { value: 'weekly', name: 'Weekly' },
         { value: 'monthly', name: 'Monthly' },
