@@ -51,7 +51,7 @@
       <v-flex xs12 sm12 md6>
         <v-card color="blue darken-1" dark height="80vh">
           <v-card-title class="pb-0">
-            <span class="title">Calculation</span>
+            <span class="title">OEE Sector</span>
           </v-card-title>
           <v-card-text>
             <v-layout row wrap align-center>
@@ -203,11 +203,12 @@ export default {
   },
   methods: {
     getOEE() {
+      const date = this.isHourUnderSix ? this.yesterdayDate : this.currentDate
       this.$axios
         .get(
           process.env.SERVICE_URL +
-            '/oee/sector?date=2019-08-19' +
-            // this.currentDate +
+            '/oee/sector?date=' +
+            date +
             '&time=' +
             this.currentTime,
           this.token
@@ -221,12 +222,15 @@ export default {
         })
     },
     getProductivity() {
+      this.chartData.xAxis.data = []
+      this.chartData.series[0].data = []
       this.$axios
         .get(
           process.env.SERVICE_URL + '/rencana-produksi/productivity',
           this.token
         )
         .then(res => {
+          console.log(res)
           for (let i = 0; i < res.data.length; i++) {
             this.chartData.xAxis.data.push(res.data[i].date)
             this.chartData.series[0].data.push(

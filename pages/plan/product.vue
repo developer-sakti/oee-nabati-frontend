@@ -101,11 +101,11 @@
                     ref="menu1"
                     v-model="startTime"
                     :close-on-content-click="false"
-                    :return-value.sync="form.start_sku"
+                    :return-value.sync="form.start_po"
                   >
                     <template slot="activator">
                       <v-text-field
-                        v-model="form.start_sku"
+                        v-model="form.start_po"
                         :rules="[rules.shiftFirst, rules.required]"
                         solo
                         light
@@ -116,10 +116,10 @@
                     </template>
                     <v-time-picker
                       v-if="startTime"
-                      v-model="form.start_sku"
+                      v-model="form.start_po"
                       :allowed-hours="setTime"
                       format="24hr"
-                      @click:minute="$refs.menu1.save(form.start_sku)"
+                      @click:minute="$refs.menu1.save(form.start_po)"
                     />
                   </v-menu>
                 </v-flex>
@@ -128,11 +128,11 @@
                     ref="menu2"
                     v-model="endTime"
                     :close-on-content-click="false"
-                    :return-value.sync="form.end_sku"
+                    :return-value.sync="form.end_po"
                   >
                     <template slot="activator">
                       <v-text-field
-                        v-model="form.end_sku"
+                        v-model="form.end_po"
                         :rules="[rules.shiftFirst, rules.required]"
                         solo
                         light
@@ -143,10 +143,10 @@
                     </template>
                     <v-time-picker
                       v-if="endTime"
-                      v-model="form.end_sku"
+                      v-model="form.end_po"
                       :allowed-hours="setTime"
                       format="24hr"
-                      @click:minute="$refs.menu2.save(form.end_sku)"
+                      @click:minute="$refs.menu2.save(form.end_po)"
                     />
                   </v-menu>
                 </v-flex>
@@ -291,8 +291,8 @@ export default {
         bottleneck_ct: null,
         target_produksi: null,
         date: null,
-        start_sku: null,
-        end_sku: null,
+        start_po: null,
+        end_po: null,
         shiftId: null,
         lineId: null,
         skuId: null,
@@ -357,7 +357,12 @@ export default {
   },
   methods: {
     setTime(v) {
-      return v >= this.limitTime.start && v <= this.limitTime.end
+      console.log(this.limitTime)
+      if (this.shiftSelected == 3) {
+        return (v >= this.limitTime.start && v <= 24) || v <= this.limitTime.end
+      } else {
+        return v >= this.limitTime.start && v <= this.limitTime.end
+      }
     },
     submit() {
       if (this.$refs.form.validate()) {
@@ -377,10 +382,9 @@ export default {
                 color: 'success'
               }
             } else {
-              console.log(res)
               this.snackbar = {
                 status: true,
-                text: 'Production Order saved fail',
+                text: res.data.message,
                 color: 'error'
               }
             }
@@ -392,6 +396,7 @@ export default {
       this.$refs.form.reset()
     },
     getPOActive() {
+      this.getPOWaiting()
       this.$axios
         .get(
           process.env.SERVICE_URL +
@@ -404,6 +409,8 @@ export default {
           this.token
         )
         .then(res => {
+          console.log(res)
+
           if (res.status == 200) {
             this.polist.active = []
             if (res.data === '') {
@@ -416,44 +423,44 @@ export default {
               this.polist.active.push(res.data)
             }
           }
-          this.getPOWaiting()
         })
     },
     getPOWaiting() {
       this.waiting = []
-      if (this.polist.active.length > 0) {
-        this.$axios
-          .get(
-            process.env.SERVICE_URL +
-              '/rencana-produksi/waiting-list?datetime=' +
-              this.currentDate +
-              ' ' +
-              this.currentTime +
-              '&lineId=' +
-              this.lineListSelectedId,
-            this.token
-          )
-          .then(res => {
-            if (res.status == 200) {
-              this.polist.waiting = []
-              if (res.data.length == 0) {
-                this.alertWaiting = {
-                  status: true,
-                  message: 'There is no waiting production order ',
-                  type: 'info'
-                }
-              } else {
-                this.polist.waiting = res.data
+      // if (this.polist.active.length > 0) {
+      this.$axios
+        .get(
+          process.env.SERVICE_URL +
+            '/rencana-produksi/waiting-list?datetime=' +
+            this.currentDate +
+            ' ' +
+            this.currentTime +
+            '&lineId=' +
+            this.lineListSelectedId,
+          this.token
+        )
+        .then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            this.polist.waiting = []
+            if (res.data.length == 0) {
+              this.alertWaiting = {
+                status: true,
+                message: 'There is no waiting production order ',
+                type: 'info'
               }
+            } else {
+              this.polist.waiting = res.data
             }
-          })
-      } else {
-        this.alertWaiting = {
-          status: true,
-          message: 'There is no waiting production order ',
-          type: 'info'
-        }
-      }
+          }
+        })
+      // } else {
+      //   this.alertWaiting = {
+      //     status: true,
+      //     message: 'There is no waiting production order ',
+      //     type: 'info'
+      //   }
+      // }
     }
   }
 }

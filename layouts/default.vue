@@ -65,7 +65,9 @@
     <v-toolbar color="white" app>
       <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer" />
       <v-toolbar-title>
-        <v-img src="/logo.png" width="80" height="45" />
+        <div class="brand-wrapper">
+          <v-img src="/logo.png" />
+        </div>
       </v-toolbar-title>
       <v-toolbar-items class="hidden-sm-and-down ml-5">
         <v-btn flat class="text-none subheading" to="/">Home</v-btn>
@@ -172,3 +174,10 @@ export default {
   }
 }
 </script>
+<style>
+.brand-wrapper {
+  min-width: 10vw !important;
+  min-height: 10vh !important;
+  padding-top: 2vh;
+}
+</style>

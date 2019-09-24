@@ -21,6 +21,32 @@
           <v-card-text>
             <v-form ref="formReport" v-model="valid" lazy-validation>
               <v-layout row wrap>
+                <v-flex xs12 sm12 md1>
+                  <v-select
+                    v-model="mode"
+                    :rules="[rules.required]"
+                    label="Unit"
+                    solo
+                    dark
+                    background-color="primary lighten-1"
+                    :items="units"
+                    item-text="text"
+                    item-value="value"
+                  />
+                </v-flex>
+                <v-flex xs12 sm12 md2>
+                  <v-select
+                    v-model="mode"
+                    :rules="[rules.required]"
+                    label="Mode"
+                    solo
+                    dark
+                    background-color="primary lighten-1"
+                    :items="modes"
+                    item-text="text"
+                    item-value="value"
+                  />
+                </v-flex>
                 <v-flex xs12 sm12 md3>
                   <v-select
                     v-model="filter.line_id"
@@ -34,7 +60,7 @@
                     item-value="id"
                   />
                 </v-flex>
-                <v-flex xs12 sm12 md3>
+                <v-flex v-if="mode == 2" xs12 sm12 md3>
                   <v-select
                     v-model="filter.shift_id"
                     :rules="[rules.required]"
@@ -47,7 +73,7 @@
                     item-value="id"
                   />
                 </v-flex>
-                <v-flex xs12 sm12 md3>
+                <v-flex v-else xs12 sm12 md3>
                   <v-menu>
                     <template slot="activator">
                       <v-text-field
@@ -63,7 +89,23 @@
                     <v-date-picker v-model="filter.from_date" reactive />
                   </v-menu>
                 </v-flex>
-                <v-flex xs12 sm12 md3>
+                <v-flex v-if="mode == 2" xs12 sm12 md3>
+                  <v-menu>
+                    <template slot="activator">
+                      <v-text-field
+                        v-model="filter.date"
+                        :rules="[rules.required]"
+                        light
+                        solo
+                        flat
+                        readonly
+                        placeholder="Date"
+                      />
+                    </template>
+                    <v-date-picker v-model="filter.date" reactive />
+                  </v-menu>
+                </v-flex>
+                <v-flex v-else xs12 sm12 md3>
                   <v-menu>
                     <template slot="activator">
                       <v-text-field
@@ -127,12 +169,20 @@ export default {
   data() {
     return {
       valid: true,
+      mode: 1,
+      units: [
+        { text: 'Line', value: 1 },
+        { text: 'Machine', value: 2 },
+        { text: 'Sector', value: 3 }
+      ],
+      modes: [{ text: 'ALL', value: 1 }, { text: 'Shift', value: 2 }],
       filter: {
         format: null,
         line_id: null,
         shift_id: null,
         from_date: null,
-        to_date: null
+        to_date: null,
+        date: null
       }
     }
   },

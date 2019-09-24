@@ -5,6 +5,7 @@ export default {
       currentDate: null,
       currentDateTime: null,
       currentDayDateTime: null,
+      yesterdayDate: null,
       month: [
         'Jan',
         'Feb',
@@ -32,12 +33,20 @@ export default {
   },
   created() {
     const date = new Date()
-    const month =
-      date.getMonth() + 1 > 9
-        ? date.getMonth() + 1
-        : '0' + (date.getMonth() + 1)
-    this.currentDate = date.getFullYear() + '-' + month + '-' + date.getDate()
-
+    let month = date.getMonth() + 1
+    let today = date.getDate()
+    let yesterday = date.getDate() - 1
+    if (month < 10) {
+      month = '0' + month
+    }
+    if (today < 10) {
+      today = '0' + today
+    }
+    if (yesterday < 10) {
+      yesterday = '0' + yesterday
+    }
+    this.currentDate = date.getFullYear() + '-' + month + '-' + today
+    this.yesterdayDate = date.getFullYear() + '-' + month + '-' + yesterday
     const hour = date.getHours() > 9 ? date.getHours() : '0' + date.getHours()
     const minute =
       date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes()
@@ -49,6 +58,16 @@ export default {
       this.formatDate(this.currentDate) + ' ' + this.currentTime
 
     this.currentDayDateTime = this.day[date.getDay] + ', ' + this.currentDate
+  },
+  computed: {
+    isHourUnderSix() {
+      const temp = this.currentTime.split(':')
+      if (parseInt(temp[0]) < 6) {
+        return true
+      } else {
+        return false
+      }
+    }
   },
   methods: {
     formatDate(date) {
