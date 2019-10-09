@@ -16,13 +16,14 @@ WORKDIR /frontend
 RUN apk update
 RUN apk upgrade
 RUN apk add --update alpine-sdk gcc bash build-base python
-RUN npm config set python /usr/bin/python
-RUN npm i -g npm
+# RUN npm config set python /usr/bin/python
+# RUN npm i -g npm
 
-COPY package.json .
-RUN npm i --silent
+# COPY package.json .
+# RUN npm i --silent
 
-COPY . .
+COPY . /frontend
+RUN npm install
 RUN npm run build
 
 EXPOSE ${FRONTEND_PORT}
